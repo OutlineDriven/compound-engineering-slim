@@ -206,4 +206,3 @@ A subject-identification gate asks one scope question when the prompt refers onl
 - [`ce-plan`](./ce-plan.md) — once requirements are clear, plan the implementation
 - [`ce-strategy`](./ce-strategy.md) — anchor ideation to a documented product strategy
 - [`ce-doc-review`](./ce-doc-review.md) — review the saved ideation artifact for clarity and completeness
-- [`ce-proof`](./ce-proof.md) — open the artifact in Proof for collaborative iteration

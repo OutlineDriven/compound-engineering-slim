@@ -232,7 +232,6 @@ Only when code review uses `mode:report-only` (read-only). Other review modes mu
 ## See Also
 
 - [`ce-code-review`](./ce-code-review.md) — can spawn this skill for browser-affecting PRs (use `mode:report-only` for concurrent runs on the same checkout)
-- [`ce-test-xcode`](./ce-test-xcode.md) — sibling skill for iOS simulator testing
 - [`ce-demo-reel`](./ce-demo-reel.md) — captures visual evidence for PR descriptions; complementary to test summary
 - [`ce-work`](./ce-work.md) — orchestrator that may invoke this skill during Phase 3 verification
 - [`ce-setup`](./ce-setup.md) — installs `agent-browser` and other dependencies

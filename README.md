@@ -44,9 +44,6 @@ Use `/ce-ideate` before the loop when you want the agent to generate and critiqu
 | `/ce-debug` | Systematically reproduce failures, trace root cause, and implement fixes |
 | `/ce-code-review` | Multi-agent code review before merging |
 | `/ce-compound` | Document learnings to make future work easier |
-| `/ce-product-pulse` | Generate a single-page, time-windowed pulse report on usage, performance, errors, and followups. Saves to `docs/pulse-reports/` |
-
-`/ce-product-pulse` is the read-side companion -- a time-windowed report on what users actually experienced and how the product performed over a given window (24h, 7d, etc.), saved to `docs/pulse-reports/` so past pulses form a browseable timeline of user outcomes. The next strategy update and the next brainstorm get real signal to anchor to.
 
 Each cycle compounds: brainstorms sharpen plans, plans inform future plans, reviews catch more issues, patterns get documented.
 

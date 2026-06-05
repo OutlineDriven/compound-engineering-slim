@@ -26,7 +26,7 @@ Compound-engineering relies on multiple external CLIs and per-repo config that's
 - **Tool dependencies** — `agent-browser`, `gh`, `jq`, `vhs`, `silicon`, `ffmpeg`, `ast-grep` — each install command is different and not all are obvious
 - **Skill dependencies** — some skills depend on other agent skills (e.g., `ast-grep` skill); knowing which ones are needed and where to install them is opaque
 - **Plugin version drift** — old installed plugin behaving differently from current docs; without checking, the user files bug reports against fixed bugs
-- **Per-repo config** — `.compound-engineering/config.local.yaml` for machine-local settings; without bootstrapping, skills like `ce-product-pulse` ask the same questions every run
+- **Per-repo config** — `.compound-engineering/config.local.yaml` for machine-local settings; without bootstrapping, skills ask the same questions every run
 - **Stale legacy config** — `compound-engineering.local.md` was the old format; lingering files cause confusion
 - **Gitignore gotchas** — `.compound-engineering/config.local.yaml` should be gitignored (machine-local) but isn't always; the user accidentally commits secrets
 - **Manual setup is tedious** — installing 7 tools one at a time with the right command for each is friction
@@ -206,4 +206,3 @@ Yes — the diagnostic and install flow work everywhere. The `/ce-update` recomm
 - [`/ce-update`](./ce-update.md) — check plugin version and recommend update command (Claude Code only)
 - [`/ce-test-browser`](./ce-test-browser.md) — depends on `agent-browser`, which `ce-setup` installs
 - [`/ce-demo-reel`](./ce-demo-reel.md) — depends on `vhs` / `silicon` / `ffmpeg`, all installed by `ce-setup`
-- [`/ce-product-pulse`](./ce-product-pulse.md) — uses `.compound-engineering/config.local.yaml` that `ce-setup` bootstraps
