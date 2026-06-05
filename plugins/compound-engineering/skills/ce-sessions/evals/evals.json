@@ -50,7 +50,7 @@
         {"term": "mode:headless", "tier": "must"},
         {"term": "ce-compound", "tier": "must"},
         {"term": "mode:autofix", "tier": "should"},
-        {"term": "ce-compound-refresh", "tier": "should"},
+        {"term": "ce-compound mode:refresh", "tier": "should"},
         {"term": "sticky mode token", "tier": "should"},
         {"term": "Discoverability Check", "tier": "should"},
         {"term": "process exhaust", "tier": "may"},

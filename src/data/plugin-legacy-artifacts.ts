@@ -85,6 +85,8 @@ const EXTRA_LEGACY_ARTIFACTS_BY_PLUGIN: Record<string, LegacyPluginArtifacts> = 
       "gemini-imagegen",
       "generate_command",
       "ce-commit",
+      "ce-compound-refresh",
+      "compound-refresh",
       "git-clean-gone-branches",
       "git-commit",
       "git-commit-push-pr",

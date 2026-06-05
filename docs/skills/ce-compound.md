@@ -15,7 +15,7 @@ The compound-engineering ideation chain is `/ce-ideate → /ce-brainstorm → /c
 | What does it do? | Documents a solved problem to `docs/solutions/[category]/[filename].md` with structured frontmatter, bug-track or knowledge-track sections, and cross-references |
 | When to use it | After solving a non-trivial problem; when the user says "that worked", "it's fixed", "problem solved" |
 | What it produces | One doc in `docs/solutions/`, plus an optional small edit to `AGENTS.md`/`CLAUDE.md` for discoverability |
-| What's next | Optional `/ce-compound-refresh` if the new learning suggests an older doc may be stale |
+| What's next | Optional `/ce-compound mode:refresh` if the new learning suggests an older doc may be stale |
 
 ---
 
@@ -65,7 +65,7 @@ The track determines section order and frontmatter fields. Forcing bug-track fie
 The Related Docs Finder scores overlap with existing `docs/solutions/` content across five dimensions: problem statement, root cause, solution approach, referenced files, prevention rules.
 
 - **High overlap** (4-5 dimensions match) → **update the existing doc** with fresher context. The existing path stays the same; a `last_updated` field is added. Two docs describing the same problem inevitably drift.
-- **Moderate overlap** (2-3 dimensions match) → create the new doc, flag for consolidation review (potential `ce-compound-refresh` trigger).
+- **Moderate overlap** (2-3 dimensions match) → create the new doc, flag for consolidation review (potential `/ce-compound mode:refresh` trigger).
 - **Low or none** → create the new doc normally.
 
 ### 4. Discoverability check — knowledge only compounds if agents can find it
@@ -76,7 +76,7 @@ The proposed addition matches the existing file's tone and density — a single-
 
 ### 5. Selective refresh trigger
 
-After capturing the new learning, `ce-compound` checks whether it should invoke `/ce-compound-refresh` on a narrow scope hint. It does NOT default to running refresh — only when the new learning suggests a specific older doc may now be stale (contradicted, superseded, or in a domain that just got refactored).
+After capturing the new learning, `ce-compound` checks whether it should invoke `/ce-compound mode:refresh` on a narrow scope hint. It does NOT default to running refresh — only when the new learning suggests a specific older doc may now be stale (contradicted, superseded, or in a domain that just got refactored).
 
 ### 6. Specialized post-review
 
@@ -102,7 +102,7 @@ Three subagents dispatch in parallel: Context Analyzer reads conversation histor
 
 The orchestrator assembles the doc, validates frontmatter via the YAML safety script, and writes `docs/solutions/performance-issues/n-plus-one-brief-generation.md`. The discoverability check finds `AGENTS.md` doesn't mention `docs/solutions/`, proposes a one-line addition to the existing directory listing, and applies it after you confirm.
 
-Phase 3 dispatches `ce-performance-oracle` and `ce-code-simplicity-reviewer` to validate the code examples and approach. Phase 2.5 surfaces a refresh recommendation: the older N+1 doc may benefit from consolidation review. The skill suggests `/ce-compound-refresh n-plus-one` as a narrow scope hint and ends.
+Phase 3 dispatches `ce-performance-oracle` and `ce-code-simplicity-reviewer` to validate the code examples and approach. Phase 2.5 surfaces a refresh recommendation: the older N+1 doc may benefit from consolidation review. The skill suggests `/ce-compound mode:refresh n-plus-one` as a narrow scope hint and ends.
 
 ---
 
@@ -137,7 +137,7 @@ The output feeds back into upstream skills:
 - `/ce-ideate` reads it as part of the comprehensive grounding step
 - `/ce-debug` reads it for prior context when an issue tracker reference is fetched
 
-When the new learning suggests an older doc may now be stale, `ce-compound` recommends `/ce-compound-refresh` with a narrow scope hint.
+When the new learning suggests an older doc may now be stale, `ce-compound` recommends `/ce-compound mode:refresh` with a narrow scope hint.
 
 ---
 
@@ -199,7 +199,6 @@ The skill asks for consent before applying the edit. You can decline; the doc st
 
 ## See Also
 
-- [`ce-compound-refresh`](./ce-compound-refresh.md) — maintain `docs/solutions/` over time as the codebase evolves
 - [`ce-debug`](./ce-debug.md) — common upstream caller after a fix is verified
 - [`ce-work`](./ce-work.md) — common upstream caller after shipping
 - [`ce-plan`](./ce-plan.md) — reads `docs/solutions/` as institutional memory during planning

@@ -12,7 +12,7 @@ const SHARED_SUPPORT_FILES = [
   "assets/resolution-template.md",
 ]
 
-const SKILLS_WITH_COPIES = ["ce-compound", "ce-compound-refresh"]
+const SKILLS_WITH_COPIES = ["ce-compound"]
 
 describe("ce-compound support file drift", () => {
   for (const file of SHARED_SUPPORT_FILES) {
@@ -124,11 +124,11 @@ describe("ce-compound YAML safety rule presence", () => {
     expect(frontmatterAdjacent.length).toBeGreaterThanOrEqual(2)
   })
 
-  test("ce-compound-refresh per-action-flows reference points at YAML-safety rules in the Replace flow", async () => {
+  test("ce-compound per-action-flows reference points at YAML-safety rules in the Replace flow", async () => {
     // The Replace Flow content lives in references/per-action-flows.md after the
     // Phase 4 extraction; SKILL.md keeps a stub that delegates to it.
     const raw = await readFile(
-      path.join(PLUGIN_ROOT, "ce-compound-refresh", "references", "per-action-flows.md"),
+      path.join(PLUGIN_ROOT, "ce-compound", "references", "per-action-flows.md"),
       "utf8",
     )
     // Anchor to the Replace Flow section so a drifted or deleted pointer is

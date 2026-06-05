@@ -659,18 +659,6 @@ describe("ce-compound frontmatter schema expansion contract", () => {
     expect(schema).toContain("best_practice")
   })
 
-  test("ce-compound-refresh schema stays in sync with canonical ce-compound schema", async () => {
-    const canonical = await readRepoFile(
-      "plugins/compound-engineering/skills/ce-compound/references/schema.yaml"
-    )
-    const refresh = await readRepoFile(
-      "plugins/compound-engineering/skills/ce-compound-refresh/references/schema.yaml"
-    )
-
-    // Duplicate schemas must be identical (kept in sync intentionally per AGENTS.md)
-    expect(refresh).toEqual(canonical)
-  })
-
   test("yaml-schema.md documents category mappings for the four new values", async () => {
     const mapping = await readRepoFile(
       "plugins/compound-engineering/skills/ce-compound/references/yaml-schema.md"

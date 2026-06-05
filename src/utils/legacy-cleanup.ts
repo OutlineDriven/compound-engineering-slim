@@ -118,6 +118,9 @@ export const STALE_SKILL_DIRS = [
 
   // Merged into ce-commit-push-pr (commit-only mode covers this use case)
   "ce-commit",
+
+  // Merged into ce-compound as mode:refresh (slim/plugin-lightweight)
+  "ce-compound-refresh",
 ]
 
 /** Old agent names (used as generated skill dirs or flat .md files). */
@@ -267,7 +270,7 @@ const LEGACY_PROMPT_DESCRIPTION_ALIASES: Record<string, string[]> = {
 const LEGACY_PROMPT_CURRENT_SKILL_FOR_FILE: Record<string, string> = {
   "ce-brainstorm.md": "ce-brainstorm",
   "ce-compound.md": "ce-compound",
-  "ce-compound-refresh.md": "ce-compound-refresh",
+  "ce-compound-refresh.md": "ce-compound",
   "ce-ideate.md": "ce-ideate",
   "ce-plan.md": "ce-plan",
   "ce-review.md": "ce-code-review",
@@ -309,6 +312,8 @@ const LEGACY_ONLY_SKILL_DESCRIPTIONS: Record<string, string> = {
     "This skill should be used when writing Ruby gems following Andrew Kane's proven patterns and philosophy. It applies when creating new Ruby gems, refactoring existing gems, designing gem APIs, or when clean, minimal, production-ready Ruby library code is needed. Triggers on requests like \"create a gem\", \"write a Ruby library\", \"design a gem API\", or mentions of Andrew Kane's style.",
   "ce-changelog":
     "Create engaging changelogs for recent merges to main branch",
+  "compound-refresh":
+    "Refresh stale or drifting learnings and pattern docs in docs/solutions/ by reviewing, updating, consolidating, replacing, or deleting them against the current codebase. Use after refactors, migrations, dependency upgrades, or when a retrieved learning feels outdated or wrong. Also use when reviewing docs/solutions/ for accuracy, when a recently solved problem contradicts an existing learning, when pattern docs no longer reflect current code, or when multiple docs seem to cover the same topic and might benefit from consolidation.",
   "ce-deploy-docs":
     "Validate and prepare documentation for GitHub Pages deployment",
   "ce-dspy-ruby":

@@ -264,7 +264,7 @@ Write to `docs/brainstorms/YYYY-MM-DD-<topic>-requirements.<md|html>` — extens
 
 #### Vocabulary Capture — after the requirements doc (only if CONCEPTS.md already exists)
 
-**Skip this step entirely if `CONCEPTS.md` does not exist at repo root** — creation is owned by ce-compound and ce-compound-refresh.
+**Skip this step entirely if `CONCEPTS.md` does not exist at repo root** — creation is owned by ce-compound.
 
 Run this **after** the approaches, the scope synthesis, and the requirements doc — that is where the canonical term often gets chosen or corrected, so capturing during early dialogue (before this point) would miss the final resolved name. If it exists, scan the full dialogue and the requirements doc for **resolved** domain terms — terms where the conversation actively pinned down a precise local meaning, not terms merely mentioned in passing. **Resolved means the definition is settled, not still under discussion.** Provisional terms that may still revise stay in the conversation only.
 
