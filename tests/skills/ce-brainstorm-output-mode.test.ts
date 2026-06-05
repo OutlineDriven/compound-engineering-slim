@@ -122,18 +122,28 @@ describe("ce-brainstorm output:html mode", () => {
     ).toBe(true)
   })
 
-  test("handoff.md option 4 is format-keyed (Proof for md, browser for html)", () => {
+  test("handoff.md has a single open-in-browser review option (no Proof / format-keyed split)", () => {
     expect(
       /Open in browser/.test(HANDOFF_BODY),
-      "handoff.md must include 'Open in browser' for HTML mode.",
+      "handoff.md must include 'Open in browser' option.",
     ).toBe(true)
     expect(
       /Open in Proof/.test(HANDOFF_BODY),
-      "handoff.md must include 'Open in Proof' for markdown mode.",
-    ).toBe(true)
+      "handoff.md must not reference 'Open in Proof' — ce-proof was deleted.",
+    ).toBe(false)
     expect(
-      /OUTPUT_FORMAT=md|OUTPUT_FORMAT=html|format-keyed|exclusive output/i.test(HANDOFF_BODY),
-      "handoff.md must state the format-keyed selection for option 4 under exclusive output mode.",
+      /ce-proof/.test(HANDOFF_BODY),
+      "handoff.md must not reference the deleted ce-proof skill.",
+    ).toBe(false)
+    // The browser option line itself must not carry an OUTPUT_FORMAT gate.
+    // (OUTPUT_FORMAT still legitimately appears elsewhere in handoff.md for the doc-review option.)
+    const browserOptionLines = HANDOFF_BODY.split("\n").filter((l) =>
+      /^\d/.test(l) && /Open in browser/.test(l),
+    )
+    expect(browserOptionLines.length).toBe(1)
+    expect(
+      browserOptionLines[0] !== undefined && !/OUTPUT_FORMAT/.test(browserOptionLines[0]),
+      "The 'Open in browser' option line must not be gated on OUTPUT_FORMAT — it is no longer format-keyed.",
     ).toBe(true)
   })
 
