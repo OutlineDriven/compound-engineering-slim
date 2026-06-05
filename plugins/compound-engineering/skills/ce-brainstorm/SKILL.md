@@ -141,7 +141,7 @@ Scan the repo before substantive brainstorming. Match depth to scope:
 
 *Topic Scan* — Search for relevant terms. Read the most relevant existing artifact if one exists (brainstorm, plan, spec, skill, feature doc). Skim adjacent examples covering similar behavior.
 
-If nothing obvious appears after a short scan, say so and continue. Two rules govern technical depth during the scan:
+If nothing obvious appears after a short scan, say so and continue. Slack organizational context research is not part of this workflow — if the user requests it, inform them it is not available and continue without it. Two rules govern technical depth during the scan:
 
 1. **Verify before claiming** — When the brainstorm touches checkable infrastructure (database tables, routes, config files, dependencies, model definitions), read the relevant source files to confirm what actually exists. Any claim that something is absent — a missing table, an endpoint that doesn't exist, a dependency not in the Gemfile, a config option with no current support — must be verified against the codebase first; if not verified, label it as an unverified assumption. This applies to every brainstorm regardless of topic.
 
