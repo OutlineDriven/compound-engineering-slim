@@ -71,8 +71,6 @@ For each workflow tool, identify the underlying primitives:
 
 **Step 3: Move behavior to the prompt**
 
-Take the logic from your workflow tools and express it in natural language:
-
 ```typescript
 // Before (in code):
 async function processFeedback(message) {
@@ -127,8 +125,6 @@ tool("read_file", async ({ path }) => {
 
 **Step 6: Test with outcomes, not procedures**
 
-Instead of testing "does it call the right function?", test "does it achieve the outcome?"
-
 ```typescript
 // Before: Testing procedure
 expect(mockProcessFeedback).toHaveBeenCalledWith(...)
@@ -147,7 +143,6 @@ expect(mockProcessFeedback).toHaveBeenCalledWith(...)
 Before: `tool("handle_feedback", ...)` with `detectCategory`, `calculatePriority`, conditional `discord.send` — all in tool code.
 
 After: `tool("store_feedback", ...)` + `tool("send_message", ...)` as primitives. System prompt defines importance criteria 1-5 and tells the agent to notify if >= 4.
-
 </before_after>
 
 <common_challenges>
@@ -167,7 +162,7 @@ Only use 4-5 for truly blocking or critical issues.
 
 **"The workflow is complex!"**
 
-Complex workflows can still be expressed in prompts. The agent is smart.
+Complex workflows can still be expressed in prompts:
 ```markdown
 When processing video feedback:
 1. Check if it's a Loom, YouTube, or direct link
@@ -178,8 +173,6 @@ When processing video feedback:
 ```
 
 **"We need deterministic behavior!"**
-
-Some operations should stay in code. That's fine. Prompt-native isn't all-or-nothing.
 
 Keep in code:
 - Security validation

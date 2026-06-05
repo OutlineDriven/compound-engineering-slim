@@ -5,8 +5,6 @@ How to write system prompts for prompt-native agents. The system prompt is where
 <principle name="features-in-prompts">
 ## Features Are Prompt Sections
 
-Each feature is a section of the system prompt that tells the agent how to behave.
-
 **Traditional approach:** Feature = function in codebase
 ```typescript
 function processFeedback(message) {
@@ -38,8 +36,6 @@ Use your judgment. Context matters.
 
 <structure>
 ## System Prompt Structure
-
-A well-structured prompt-native system prompt:
 
 ```markdown
 # Identity
@@ -98,14 +94,10 @@ When creating summaries:
 
 The goal is clarity, not consistency.
 ```
-
-Trust the agent's intelligence. It knows how to communicate.
 </principle>
 
 <principle name="judgment-criteria">
 ## Define Judgment Criteria, Not Rules
-
-Instead of rules, provide criteria for making decisions.
 
 **Rules (rigid):**
 ```markdown
@@ -132,8 +124,6 @@ Examples:
 
 <principle name="context-windows">
 ## Work With Context Windows
-
-The agent sees: system prompt + recent messages + tool results. Design for this.
 
 **Use conversation history:**
 ```markdown
@@ -223,8 +213,6 @@ Before processing any message:
 
 <iteration>
 ## Iterating on System Prompts
-
-Prompt-native development means rapid iteration:
 
 1. **Observe** agent behavior in production
 2. **Identify** gaps: "It's not rating video feedback high enough"
