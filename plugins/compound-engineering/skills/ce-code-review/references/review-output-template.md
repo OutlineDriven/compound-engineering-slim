@@ -15,9 +15,9 @@ Use this **exact format** when presenting synthesized review findings — this e
 **Intent:** Add order export endpoint with CSV and JSON format support
 **Mode:** interactive
 
-**Reviewers:** correctness, testing, maintainability, security, api-contract
+**Reviewers:** correctness, testing, security, performance
 - security -- new public endpoint accepts user-provided format parameter
-- api-contract -- new /api/orders/export route with response schema
+- performance -- export path loads orders without pagination
 
 ### Applied (safe, verified)
 
@@ -42,7 +42,7 @@ Committed: `fix(review): cover empty-format branch + tighten export perms` (work
 | # | File | Issue | Reviewer | Confidence |
 |---|------|-------|----------|------------|
 | 2 | `export_service.rb:87` | Loads all orders into memory -- unbounded | performance | 100 |
-| 3 | `export_service.rb:91` | No pagination contract | api-contract, performance | 75 |
+| 3 | `export_service.rb:91` | No pagination contract | performance | 75 |
 
 - **#2** — `Order.where(...).to_a` materializes the full result set; a large account OOMs the worker. Stream with `find_each` or paginate.
 - **#3** — the endpoint returns every row in one response; needs a cursor/page contract before GA. Design decision — see Actionable Findings.
@@ -57,7 +57,7 @@ Committed: `fix(review): cover empty-format branch + tighten export perms` (work
 
 | # | File | Issue | Reviewer | Confidence |
 |---|------|-------|----------|------------|
-| 5 | `export_helper.rb:12` | Format detection could use an early return | maintainability | 75 |
+| 5 | `export_helper.rb:12` | Format detection could use an early return | correctness | 75 |
 
 ### Actionable Findings
 
@@ -75,12 +75,6 @@ Committed: `fix(review): cover empty-format branch + tighten export perms` (work
 ### Learnings & Past Solutions
 
 - [Known Pattern] `docs/solutions/export-pagination.md` -- previous export pagination fix applies to this endpoint
-
-### Deployment Notes
-
-- Pre-deploy: capture baseline row counts before enabling the export backfill
-- Verify: `SELECT COUNT(*) FROM exports WHERE status IS NULL;` should stay at `0`
-- Rollback: keep the old export path available until the backfill has been validated
 
 ### Coverage
 
@@ -135,7 +129,6 @@ This fails because: no pipe-delimited tables, no severity-grouped `###` headers,
 - **Actionable Findings section** -- include when the actionable queue is non-empty (findings for the caller to handle)
 - **Pre-existing section** -- separate table, no confidence column (these are informational)
 - **Learnings & Past Solutions section** -- results from ce-learnings-researcher, with links to docs/solutions/ files
-- **Deployment Notes section** -- key checklist items from ce-deployment-verification-agent. Omit if the agent did not run. Schema drift surfaces as `data-migration` findings — no separate section.
 - **Coverage section** -- suppressed count, residual risks, testing gaps, failed reviewers
 - **Summary uses blockquotes** for verdict, reasoning, and fix order
 - **Horizontal rule** (`---`) separates findings from verdict

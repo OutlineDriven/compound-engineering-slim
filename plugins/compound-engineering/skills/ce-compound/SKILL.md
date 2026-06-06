@@ -269,7 +269,7 @@ Based on problem type, optionally invoke specialized agents:
 - **performance_issue** → `ce-performance-oracle`
 - **security_issue** → `ce-security-sentinel`
 - **database_issue** → `ce-data-integrity-guardian`
-- Any code-heavy issue → `ce-code-simplicity-reviewer`
+- Any code-heavy issue → `ce-correctness-reviewer` (covers code simplicity and minimalism)
 
 </parallel_tasks>
 

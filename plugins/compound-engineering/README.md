@@ -10,7 +10,7 @@ After installing, run `/ce-setup` in any project. It diagnoses your environment,
 
 | Component | Count |
 |-----------|-------|
-| Agents | 34 |
+| Agents | 26 |
 | Skills | 14 |
 
 ## Skills
@@ -69,23 +69,15 @@ Agents are specialized subagents invoked by skills — you typically don't call 
 
 | Agent | Description |
 |-------|-------------|
-| `ce-api-contract-reviewer` | Detect breaking API contract changes |
 | `ce-architecture-strategist` | Analyze architectural decisions and compliance |
-| `ce-code-simplicity-reviewer` | Final pass for simplicity and minimalism |
-| `ce-correctness-reviewer` | Logic errors, edge cases, state bugs |
+| `ce-correctness-reviewer` | Logic errors, edge cases, state bugs, production reliability, structural quality, and code simplicity |
 | `ce-data-integrity-guardian` | Database migrations and data integrity |
-| `ce-data-migration-reviewer` | Schema drift, migration safety, mapping verification, deploy-window checks |
-| `ce-deployment-verification-agent` | Create Go/No-Go deployment checklists for risky data changes |
-| `ce-julik-frontend-races-reviewer` | Review JavaScript/Stimulus code for race conditions |
-| `ce-maintainability-reviewer` | Coupling, complexity, naming, dead code |
 | `ce-pattern-recognition-specialist` | Analyze code for patterns and anti-patterns |
 | `ce-performance-oracle` | Performance analysis and optimization |
 | `ce-performance-reviewer` | Runtime performance with confidence calibration |
-| `ce-reliability-reviewer` | Production reliability and failure modes |
 | `ce-security-reviewer` | Exploitable vulnerabilities with confidence calibration |
 | `ce-security-sentinel` | Security audits and vulnerability assessments |
-| `ce-testing-reviewer` | Test coverage gaps, weak assertions |
-| `ce-project-standards-reviewer` | CLAUDE.md and AGENTS.md compliance |
+| `ce-testing-reviewer` | Test coverage gaps, weak assertions, API contract stability, and project-standards compliance |
 | `ce-adversarial-reviewer` | Construct failure scenarios to break implementations across component boundaries |
 | `ce-previous-comments-reviewer` | Conditional review persona that checks whether prior PR feedback has been addressed in the current diff |
 

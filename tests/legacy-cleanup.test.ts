@@ -372,10 +372,10 @@ describe("cleanupStaleAgents", () => {
     const root = await fs.mkdtemp(path.join(os.tmpdir(), "cleanup-agents-dir-"))
     __tempRoots.push(root)
     await createDir(
-      path.join(root, "code-simplicity-reviewer"),
+      path.join(root, "performance-reviewer"),
       skillContent(
-        "code-simplicity-reviewer",
-        await pluginDescription("plugins/compound-engineering/agents/ce-code-simplicity-reviewer.md"),
+        "performance-reviewer",
+        await pluginDescription("plugins/compound-engineering/agents/ce-performance-reviewer.md"),
       ),
     )
     await createDir(
@@ -389,7 +389,7 @@ describe("cleanupStaleAgents", () => {
     const removed = await cleanupStaleAgents(root, null)
 
     expect(removed).toBe(2)
-    expect(await exists(path.join(root, "code-simplicity-reviewer"))).toBe(false)
+    expect(await exists(path.join(root, "performance-reviewer"))).toBe(false)
     expect(await exists(path.join(root, "repo-research-analyst"))).toBe(false)
   })
 

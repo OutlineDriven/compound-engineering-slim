@@ -187,6 +187,7 @@ const STALE_AGENT_NAMES = [
   "ce-agent-native-reviewer",
   "ankane-readme-writer",
   "api-contract-reviewer",
+  "ce-api-contract-reviewer",
   "architecture-strategist",
   "best-practices-researcher",
   "bug-reproduction-validator",
@@ -206,12 +207,16 @@ const STALE_AGENT_NAMES = [
   "cli-agent-readiness-reviewer",
   "cli-readiness-reviewer",
   "code-simplicity-reviewer",
+  "ce-code-simplicity-reviewer",
   "coherence-reviewer",
   "correctness-reviewer",
   "data-integrity-guardian",
   "data-migration-expert",
+  "data-migration-reviewer",
+  "ce-data-migration-reviewer",
   "data-migrations-reviewer",
   "deployment-verification-agent",
+  "ce-deployment-verification-agent",
   "design-implementation-reviewer",
   "design-iterator",
   "design-lens-reviewer",
@@ -223,12 +228,14 @@ const STALE_AGENT_NAMES = [
   "issue-intelligence-analyst",
   "ce-issue-intelligence-analyst",
   "julik-frontend-races-reviewer",
+  "ce-julik-frontend-races-reviewer",
   "kieran-python-reviewer",
   "kieran-rails-reviewer",
   "kieran-typescript-reviewer",
   "learnings-researcher",
   "lint",
   "maintainability-reviewer",
+  "ce-maintainability-reviewer",
   "pattern-recognition-specialist",
   "performance-oracle",
   "performance-reviewer",
@@ -237,7 +244,9 @@ const STALE_AGENT_NAMES = [
   "ce-pr-comment-resolver",
   "product-lens-reviewer",
   "project-standards-reviewer",
+  "ce-project-standards-reviewer",
   "reliability-reviewer",
+  "ce-reliability-reviewer",
   "repo-research-analyst",
   "schema-drift-detector",
   "session-historian",
@@ -577,6 +586,45 @@ const LEGACY_ONLY_AGENT_DESCRIPTIONS: Record<string, string> = {
   // current-era installs after the agent file is gone.
   "ce-agent-native-reviewer":
     "Reviews code to ensure agent-native parity -- any action a user can take, an agent can also take. Use after adding UI features, agent tools, or system prompts.",
+
+  // Review personas consolidated into ce-correctness-reviewer and
+  // ce-testing-reviewer, plus niche conditional personas pruned with no
+  // replacement (slim/ultra-minimal). The unprefixed names are fingerprinted
+  // via STALE_AGENT_NAMES; both the unprefixed and ce- entries carry the last
+  // shipped descriptions so cleanup can fingerprint installs from either era
+  // after the agent files are gone.
+  "reliability-reviewer":
+    "Conditional code-review persona, selected when the diff touches error handling, retries, circuit breakers, timeouts, health checks, background jobs, or async handlers. Reviews code for production reliability and failure modes.",
+  "ce-reliability-reviewer":
+    "Conditional code-review persona, selected when the diff touches error handling, retries, circuit breakers, timeouts, health checks, background jobs, or async handlers. Reviews code for production reliability and failure modes.",
+  "maintainability-reviewer":
+    "Always-on code-review persona. Reviews code for structural quality, complexity deletion, coupling, naming, dead code, type-boundary leaks, and abstraction debt.",
+  "ce-maintainability-reviewer":
+    "Always-on code-review persona. Reviews code for structural quality, complexity deletion, coupling, naming, dead code, type-boundary leaks, and abstraction debt.",
+  "code-simplicity-reviewer":
+    "Final review pass to ensure code is as simple and minimal as possible. Use after implementation is complete to identify YAGNI violations and simplification opportunities.",
+  "ce-code-simplicity-reviewer":
+    "Final review pass to ensure code is as simple and minimal as possible. Use after implementation is complete to identify YAGNI violations and simplification opportunities.",
+  "api-contract-reviewer":
+    "Conditional code-review persona, selected when the diff touches API routes, request/response types, serialization, versioning, or exported type signatures. Reviews code for breaking contract changes.",
+  "ce-api-contract-reviewer":
+    "Conditional code-review persona, selected when the diff touches API routes, request/response types, serialization, versioning, or exported type signatures. Reviews code for breaking contract changes.",
+  "project-standards-reviewer":
+    "Always-on code-review persona. Audits changes against the project's own CLAUDE.md and AGENTS.md standards -- frontmatter rules, reference inclusion, naming conventions, cross-platform portability, and tool selection policies.",
+  "ce-project-standards-reviewer":
+    "Always-on code-review persona. Audits changes against the project's own CLAUDE.md and AGENTS.md standards -- frontmatter rules, reference inclusion, naming conventions, cross-platform portability, and tool selection policies.",
+  "julik-frontend-races-reviewer":
+    "Conditional code-review persona, selected when the diff touches async UI code, Stimulus/Turbo lifecycles, or DOM-timing-sensitive frontend behavior. Reviews code for race conditions and janky UI failure modes.",
+  "ce-julik-frontend-races-reviewer":
+    "Conditional code-review persona, selected when the diff touches async UI code, Stimulus/Turbo lifecycles, or DOM-timing-sensitive frontend behavior. Reviews code for race conditions and janky UI failure modes.",
+  "data-migration-reviewer":
+    "Conditional code-review persona for migration files, schema dumps, backfills, and data transformations. Covers schema drift, mapping correctness, deploy-window safety, and verification plans.",
+  "ce-data-migration-reviewer":
+    "Conditional code-review persona for migration files, schema dumps, backfills, and data transformations. Covers schema drift, mapping correctness, deploy-window safety, and verification plans.",
+  "deployment-verification-agent":
+    "Produces Go/No-Go deployment checklists with SQL verification queries, rollback procedures, and monitoring plans. Use when PRs touch production data, migrations, or risky data changes.",
+  "ce-deployment-verification-agent":
+    "Produces Go/No-Go deployment checklists with SQL verification queries, rollback procedures, and monitoring plans. Use when PRs touch production data, migrations, or risky data changes.",
 }
 
 type LegacyFingerprints = {

@@ -415,8 +415,9 @@ describe("ce-code-review contract", () => {
     // Mode-aware demotion step exists (sub-step within Stage 5; numbering may shift if steps reorder)
     expect(content).toMatch(/Mode-aware demotion of weak general-quality findings/i)
 
-    // Conservative scope: testing + maintainability personas only
-    expect(content).toContain("`testing` or `maintainability`")
+    // Conservative scope: testing persona only (maintainability findings now arrive
+    // tagged `correctness` and are not demotable as a testing-only signal).
+    expect(content).toContain("The only** contributing reviewer is `testing`")
 
     // Severity P2 or P3 only (P0/P1 always stay primary)
     expect(content).toMatch(/Severity is P2 or P3/)
@@ -424,9 +425,10 @@ describe("ce-code-review contract", () => {
     // autofix_class is advisory
     expect(content).toMatch(/`autofix_class` is `advisory`/)
 
-    // Route demoted findings to soft buckets
+    // Route demoted findings to the testing_gaps soft bucket. Maintainability
+    // findings no longer have a demotion path (they arrive tagged `correctness`
+    // after the persona merge), so residual_risks is no longer a demotion target.
     expect(content).toMatch(/`testing_gaps`/)
-    expect(content).toMatch(/`residual_risks`/)
 
     // Demotion entry uses title-only (compact return omits why_it_matters)
     expect(content).toMatch(/append `<file:line> -- <title>` to/)
@@ -440,16 +442,10 @@ describe("ce-code-review contract", () => {
     const personas = [
       "ce-correctness-reviewer",
       "ce-testing-reviewer",
-      "ce-maintainability-reviewer",
-      "ce-project-standards-reviewer",
       "ce-security-reviewer",
       "ce-performance-reviewer",
-      "ce-api-contract-reviewer",
-      "ce-data-migration-reviewer",
-      "ce-reliability-reviewer",
       "ce-adversarial-reviewer",
       "ce-previous-comments-reviewer",
-      "ce-julik-frontend-races-reviewer",
     ]
 
     for (const persona of personas) {
@@ -466,56 +462,6 @@ describe("ce-code-review contract", () => {
     }
   })
 
-  test("documents stack-specific conditional reviewers for the JSON pipeline", async () => {
-    const content = await readRepoFile("plugins/compound-engineering/skills/ce-code-review/SKILL.md")
-    const catalog = await readRepoFile(
-      "plugins/compound-engineering/skills/ce-code-review/references/persona-catalog.md",
-    )
-
-    for (const agent of ["ce-julik-frontend-races-reviewer"]) {
-      expect(content).toContain(agent)
-      expect(catalog).toContain(agent)
-    }
-
-    for (const removed of [
-      "ce-dhh-rails-reviewer",
-      "ce-kieran-rails-reviewer",
-      "ce-kieran-python-reviewer",
-      "ce-kieran-typescript-reviewer",
-    ]) {
-      expect(content).not.toContain(removed)
-      expect(catalog).not.toContain(removed)
-    }
-
-    expect(content).toContain("## Language-Aware Conditionals")
-    expect(content).not.toContain("## Language-Agnostic")
-  })
-
-  test("stack-specific reviewer agents follow the structured findings contract", async () => {
-    const reviewers = [
-      {
-        path: "plugins/compound-engineering/agents/ce-julik-frontend-races-reviewer.md",
-        reviewer: "julik-frontend-races",
-      },
-    ]
-
-    for (const reviewer of reviewers) {
-      const content = await readRepoFile(reviewer.path)
-      const parsed = parseFrontmatter(content)
-      const tools = String(parsed.data.tools ?? "")
-
-      expect(String(parsed.data.description)).toContain("Conditional code-review persona")
-      expect(tools).toContain("Read")
-      expect(tools).toContain("Grep")
-      expect(tools).toContain("Glob")
-      expect(tools).toContain("Bash")
-      expect(content).toContain("## Confidence calibration")
-      expect(content).toContain("## What you don't flag")
-      expect(content).toContain("Return your findings as JSON matching the findings schema. No prose outside the JSON.")
-      expect(content).toContain(`"reviewer": "${reviewer.reviewer}"`)
-    }
-  })
-
   test("JSON-pipeline persona agents grant Write so they can save run artifacts", async () => {
     // The ce-code-review subagent template instructs each persona to write its full
     // analysis to /tmp/compound-engineering/ce-code-review/{run_id}/{reviewer}.json.
@@ -524,16 +470,10 @@ describe("ce-code-review contract", () => {
     const personas = [
       "ce-correctness-reviewer",
       "ce-testing-reviewer",
-      "ce-maintainability-reviewer",
-      "ce-project-standards-reviewer",
       "ce-security-reviewer",
       "ce-performance-reviewer",
-      "ce-api-contract-reviewer",
-      "ce-data-migration-reviewer",
-      "ce-reliability-reviewer",
       "ce-adversarial-reviewer",
       "ce-previous-comments-reviewer",
-      "ce-julik-frontend-races-reviewer",
     ]
 
     for (const persona of personas) {
@@ -543,21 +483,6 @@ describe("ce-code-review contract", () => {
 
       expect(tools).toContain("Write")
     }
-  })
-
-  test("data-migration reviewer consolidates schema drift and migration safety", async () => {
-    const content = await readRepoFile(
-      "plugins/compound-engineering/agents/ce-data-migration-reviewer.md",
-    )
-    const skill = await readRepoFile("plugins/compound-engineering/skills/ce-code-review/SKILL.md")
-
-    expect(content).toContain("## Step 0: Schema drift")
-    expect(content).toContain('"reviewer": "data-migration"')
-    expect(content).toContain("Return your findings as JSON matching the findings schema.")
-    expect(skill).toContain("data-migration` spawn gate")
-    expect(skill).not.toContain("ce-schema-drift-detector")
-    expect(skill).not.toContain("ce-data-migration-expert")
-    expect(skill).not.toContain("ce-data-migrations-reviewer")
   })
 
   test("PR mode uses gh pr diff without checkout; branch/standalone fail closed on missing base", async () => {
