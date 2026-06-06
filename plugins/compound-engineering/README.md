@@ -43,9 +43,9 @@ The primary entry points for engineering work, invoked as slash commands. Detail
 
 | Skill | Description |
 |-------|-------------|
-| [`ce-clean-gone-branches`](../../docs/skills/ce-clean-gone-branches.md) | Clean up local branches whose remote tracking branch is gone |
-| [`ce-commit-push-pr`](../../docs/skills/ce-commit-push-pr.md) | Commit, push, and open a PR with an adaptive description; also update an existing PR description, or generate a description on its own without committing; or commit only without pushing |
-| [`ce-worktree`](../../docs/skills/ce-worktree.md) | Manage Git worktrees for parallel development |
+| [`/ce-clean-gone-branches`](../../docs/skills/ce-clean-gone-branches.md) | Clean up local branches whose remote tracking branch is gone |
+| [`/ce-commit-push-pr`](../../docs/skills/ce-commit-push-pr.md) | Commit, push, and open a PR with an adaptive description; also update an existing PR description, or generate a description on its own without committing; or commit only without pushing |
+| [`/ce-worktree`](../../docs/skills/ce-worktree.md) | Manage Git worktrees for parallel development |
 
 ### Workflow Utilities
 
@@ -63,23 +63,23 @@ The primary entry points for engineering work, invoked as slash commands. Detail
 
 | Skill | Description |
 |-------|-------------|
-| `ce-agent-native-architecture` | Build AI agents using prompt-native architecture |
-| `ce-agent-native-audit` | Run comprehensive agent-native architecture review with scored principles |
-| [`ce-frontend-design`](../../docs/skills/ce-frontend-design.md) | Create production-grade frontend interfaces |
-| [`ce-polish`](../../docs/skills/ce-polish.md) | Conversational UX polish — start a dev server, open the feature in a browser, and iterate together; auto-detects 8 frameworks. Manual invocation only |
+| `/ce-agent-native-architecture` | Build AI agents using prompt-native architecture |
+| `/ce-agent-native-audit` | Run comprehensive agent-native architecture review with scored principles |
+| [`/ce-frontend-design`](../../docs/skills/ce-frontend-design.md) | Create production-grade frontend interfaces |
+| [`/ce-polish`](../../docs/skills/ce-polish.md) | Conversational UX polish — start a dev server, open the feature in a browser, and iterate together; auto-detects 8 frameworks. Manual invocation only |
 
 ### Review & Quality
 
 | Skill | Description |
 |-------|-------------|
-| [`ce-doc-review`](../../docs/skills/ce-doc-review.md) | Review documents using parallel persona agents for role-specific feedback |
+| [`/ce-doc-review`](../../docs/skills/ce-doc-review.md) | Review documents using parallel persona agents for role-specific feedback |
 | [`/ce-simplify-code`](../../docs/skills/ce-simplify-code.md) | Simplify recent code changes for reuse, quality, and efficiency — parallel reviewers find issues, fixes applied, behavior verified by tests |
 
 ### Beta / Experimental
 
 | Skill | Description |
 |-------|-------------|
-| `ce-dogfood-beta` | Diff-scoped browser QA of the active branch: builds an exhaustive test matrix of every change, drives the app with agent-browser, then auto-fixes issues, adds regression tests, and commits each fix until green |
+| `/ce-dogfood-beta` | Diff-scoped browser QA of the active branch: builds an exhaustive test matrix of every change, drives the app with agent-browser, then auto-fixes issues, adds regression tests, and commits each fix until green |
 | `/lfg` | Full autonomous engineering workflow |
 
 ## Agents
