@@ -71,8 +71,6 @@ For each workflow tool, identify the underlying primitives:
 
 **Step 3: Move behavior to the prompt**
 
-Take the logic from your workflow tools and express it in natural language:
-
 ```typescript
 // Before (in code):
 async function processFeedback(message) {
@@ -127,8 +125,6 @@ tool("read_file", async ({ path }) => {
 
 **Step 6: Test with outcomes, not procedures**
 
-Instead of testing "does it call the right function?", test "does it achieve the outcome?"
-
 ```typescript
 // Before: Testing procedure
 expect(mockProcessFeedback).toHaveBeenCalledWith(...)
@@ -142,107 +138,11 @@ expect(mockProcessFeedback).toHaveBeenCalledWith(...)
 <before_after>
 ## Before/After Examples
 
-**Example 1: Feedback Processing**
+**Feedback Processing:**
 
-Before:
-```typescript
-tool("handle_feedback", async ({ message, author }) => {
-  const category = detectCategory(message);
-  const priority = calculatePriority(message, category);
-  const feedbackId = await db.feedback.insert({
-    id: generateId(),
-    author,
-    message,
-    category,
-    priority,
-    timestamp: new Date().toISOString(),
-  });
+Before: `tool("handle_feedback", ...)` with `detectCategory`, `calculatePriority`, conditional `discord.send` — all in tool code.
 
-  if (priority >= 4) {
-    await discord.send(ALERT_CHANNEL, `High priority feedback from ${author}`);
-  }
-
-  return { feedbackId, category, priority };
-});
-```
-
-After:
-```typescript
-// Simple storage primitive
-tool("store_feedback", async ({ item }) => {
-  await db.feedback.insert(item);
-  return { text: `Stored feedback ${item.id}` };
-});
-
-// Simple message primitive
-tool("send_message", async ({ channel, content }) => {
-  await discord.send(channel, content);
-  return { text: "Sent" };
-});
-```
-
-System prompt:
-```markdown
-## Feedback Processing
-
-When someone shares feedback:
-1. Generate a unique ID
-2. Rate importance 1-5 based on impact and urgency
-3. Store using store_feedback with the full item
-4. If importance >= 4, send a notification to the team channel
-
-Importance guidelines:
-- 5: Critical (crashes, data loss, security)
-- 4: High (detailed bug reports, blocking issues)
-- 3: Medium (suggestions, minor bugs)
-- 2: Low (cosmetic, edge cases)
-- 1: Minimal (off-topic, duplicates)
-```
-
-**Example 2: Report Generation**
-
-Before:
-```typescript
-tool("generate_weekly_report", async ({ startDate, endDate, format }) => {
-  const data = await fetchMetrics(startDate, endDate);
-  const summary = summarizeMetrics(data);
-  const charts = generateCharts(data);
-
-  if (format === "html") {
-    return renderHtmlReport(summary, charts);
-  } else if (format === "markdown") {
-    return renderMarkdownReport(summary, charts);
-  } else {
-    return renderPdfReport(summary, charts);
-  }
-});
-```
-
-After:
-```typescript
-tool("query_metrics", async ({ start, end }) => {
-  const data = await db.metrics.query({ start, end });
-  return { text: JSON.stringify(data, null, 2) };
-});
-
-tool("write_file", async ({ path, content }) => {
-  writeFileSync(path, content);
-  return { text: `Wrote ${path}` };
-});
-```
-
-System prompt:
-```markdown
-## Report Generation
-
-When asked to generate a report:
-1. Query the relevant metrics using query_metrics
-2. Analyze the data and identify key trends
-3. Create a clear, well-formatted report
-4. Write it using write_file in the appropriate format
-
-Use your judgment about format and structure. Make it useful.
-```
+After: `tool("store_feedback", ...)` + `tool("send_message", ...)` as primitives. System prompt defines importance criteria 1-5 and tells the agent to notify if >= 4.
 </before_after>
 
 <common_challenges>
@@ -262,7 +162,7 @@ Only use 4-5 for truly blocking or critical issues.
 
 **"The workflow is complex!"**
 
-Complex workflows can still be expressed in prompts. The agent is smart.
+Complex workflows can still be expressed in prompts:
 ```markdown
 When processing video feedback:
 1. Check if it's a Loom, YouTube, or direct link
@@ -273,8 +173,6 @@ When processing video feedback:
 ```
 
 **"We need deterministic behavior!"**
-
-Some operations should stay in code. That's fine. Prompt-native isn't all-or-nothing.
 
 Keep in code:
 - Security validation

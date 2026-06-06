@@ -91,8 +91,6 @@ content-search: pattern="problem_type:.*(architecture_pattern|design_pattern|too
 - Include related terms the user might not have mentioned
 - Match the fields to the input shape: bug-shaped queries search `symptoms:` and `root_cause:`; decision- and pattern-shaped queries search `tags:`, `title:`, and `problem_type:`
 
-**Why this works:** Content search scans file contents without reading into context. Only matching filenames are returned, dramatically reducing the set of files to examine.
-
 **Combine results** from all searches to get candidate files (typically 5-20 files instead of 200).
 
 **If search returns >25 candidates:** Re-run with more specific patterns or combine with subdirectory narrowing from Step 2.
@@ -140,6 +138,8 @@ Match frontmatter fields against the keywords extracted in Step 1:
 - `component` matches the technical area being touched
 - `symptoms` describe similar observable behaviors (when applicable)
 
+When two entries have comparable relevance, prefer the one with higher `severity`.
+
 **Moderate matches (include):**
 
 - `problem_type` is relevant (e.g., `architecture_pattern` when the caller is making architectural decisions, `performance_issue` when the caller is optimizing)
@@ -179,7 +179,7 @@ The two `problem_type` tracks:
 
 Other frontmatter fields (`component`, `root_cause`, etc.) are repo-specific and evolve over time. Do not assume a fixed enum — read the value from each file as-is, and when summarizing a learning with an unrecognized value, pass it through verbatim rather than normalizing it.
 
-Probe the live `docs/solutions/` directory (Step 2) for what actually exists; do not hard-code subdirectory names.
+Subdirectories under `docs/solutions/` are discovered at runtime (Step 2); do not hard-code names.
 
 ## Output Format
 
@@ -217,40 +217,3 @@ Structure findings as follows:
 ```
 
 When no relevant learnings are found, say so explicitly, include the search context so the caller can see what was looked for, and note that the caller's work may be worth capturing with `/ce-compound` after it lands — the absence is itself useful signal.
-
-## Efficiency Guidelines
-
-**DO:**
-
-- Use the native content-search tool to pre-filter files BEFORE reading any content (critical for 100+ files)
-- Run multiple content searches in PARALLEL across different keyword dimensions
-- Probe `docs/solutions/` subdirectories dynamically rather than assuming a fixed list
-- Include `title:` in search patterns — often the most descriptive field
-- Use OR patterns for synonyms and search case-insensitively
-- Narrow to discovered subdirectories when the caller's Domain hint makes one obvious
-- Broaden the content search as fallback if <3 candidates found; re-narrow if >25
-- Read frontmatter only of search-matched candidates, capped at the first ~30 lines per file (enough to cover YAML)
-- Fully read only candidates that pass relevance scoring in Step 5
-- Prioritize high-severity entries and flag date when a learning may be superseded
-- Extract actionable takeaways, not summaries
-
-**DON'T:**
-
-- Skip the grep pre-filter and read frontmatter of every file in `docs/solutions/` — pre-filter first, then read frontmatter of the shortlist
-- Read full content of every candidate — only the ones that pass relevance scoring
-- Run searches sequentially when they can be parallel
-- Use only exact keyword matches (include synonyms); skip `title:` in patterns; proceed with >25 candidates without narrowing
-- Return raw document contents instead of distilling them
-- Include every tangentially related match — 1-2 adjacent entries with a caveat is fine; a long tail of weak matches is noise
-- Discard a candidate because it lacks bug-shaped fields like `symptoms` or `root_cause` — non-bug entries legitimately omit them
-- Assume `docs/solutions/patterns/critical-patterns.md` exists — read it only when present
-
-## Integration Points
-
-This agent is invoked by:
-
-- `/ce-plan` — to inform planning with institutional knowledge and add depth during confidence checking
-- `/ce-code-review`, `/ce-optimize`, `/ce-ideate` — to surface prior learnings relevant to the change, optimization target, or ideation topic
-- Standalone invocation before starting work in a documented area
-
-Output is consumed as prose — no downstream caller parses specific field labels out of it — so prioritize distilled, actionable takeaways over structural rigor.

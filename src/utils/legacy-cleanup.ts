@@ -103,6 +103,27 @@ export const STALE_SKILL_DIRS = [
   // their scripts moved into ce-sessions/scripts/ and the skills were removed.
   "ce-session-inventory",
   "ce-session-extract",
+
+  // Removed Slack feature (agent + skill dropped together)
+  "ce-slack-research",
+
+  // Removed niche domain skills (slim/plugin-lightweight)
+  "ce-dhh-rails-style",
+  "ce-test-xcode",
+  "ce-riffrec-feedback-analysis",
+  "ce-product-pulse",
+  "ce-proof",
+  "ce-promote",
+  "ce-gemini-imagegen",
+
+  // Merged into ce-commit-push-pr (commit-only mode covers this use case)
+  "ce-commit",
+
+  // Merged into ce-compound as mode:refresh (slim/plugin-lightweight)
+  "ce-compound-refresh",
+
+  // Merged into ce-work (delegation mode absorbed into stable skill)
+  "ce-work-beta",
 ]
 
 /** Old agent names (used as generated skill dirs or flat .md files). */
@@ -116,15 +137,19 @@ const STALE_AGENT_NAMES = [
   "architecture-strategist",
   "best-practices-researcher",
   "bug-reproduction-validator",
+  "ce-ankane-readme-writer",
   "ce-cli-agent-readiness-reviewer",
   "ce-cli-readiness-reviewer",
   "ce-data-migration-expert",
   "ce-data-migrations-reviewer",
+  "ce-design-implementation-reviewer",
+  "ce-design-iterator",
   "ce-dhh-rails-reviewer",
   "ce-kieran-python-reviewer",
   "ce-kieran-rails-reviewer",
   "ce-kieran-typescript-reviewer",
   "ce-schema-drift-detector",
+  "ce-swift-ios-reviewer",
   "cli-agent-readiness-reviewer",
   "cli-readiness-reviewer",
   "code-simplicity-reviewer",
@@ -140,7 +165,7 @@ const STALE_AGENT_NAMES = [
   "dhh-rails-reviewer",
   "feasibility-reviewer",
   "figma-design-sync",
-  "framework-docs-researcher",
+  "ce-framework-docs-researcher",
   "git-history-analyzer",
   "issue-intelligence-analyst",
   "julik-frontend-races-reviewer",
@@ -162,6 +187,7 @@ const STALE_AGENT_NAMES = [
   "schema-drift-detector",
   "session-historian",
   "slack-researcher",
+  "ce-slack-researcher",
   "scope-guardian-reviewer",
   "security-lens-reviewer",
   "security-reviewer",
@@ -247,12 +273,15 @@ const LEGACY_PROMPT_DESCRIPTION_ALIASES: Record<string, string[]> = {
 const LEGACY_PROMPT_CURRENT_SKILL_FOR_FILE: Record<string, string> = {
   "ce-brainstorm.md": "ce-brainstorm",
   "ce-compound.md": "ce-compound",
-  "ce-compound-refresh.md": "ce-compound-refresh",
+  "ce-compound-refresh.md": "ce-compound",
   "ce-ideate.md": "ce-ideate",
   "ce-plan.md": "ce-plan",
   "ce-review.md": "ce-code-review",
   "ce-work.md": "ce-work",
-  "ce-work-beta.md": "ce-work-beta",
+  // ce-work-beta was merged into ce-work. Point at the successor so the current
+  // ce-work description is also accepted as an ownership signal alongside the
+  // historical beta descriptions already in LEGACY_PROMPT_DESCRIPTION_ALIASES.
+  "ce-work-beta.md": "ce-work",
 }
 
 /**
@@ -289,6 +318,8 @@ const LEGACY_ONLY_SKILL_DESCRIPTIONS: Record<string, string> = {
     "This skill should be used when writing Ruby gems following Andrew Kane's proven patterns and philosophy. It applies when creating new Ruby gems, refactoring existing gems, designing gem APIs, or when clean, minimal, production-ready Ruby library code is needed. Triggers on requests like \"create a gem\", \"write a Ruby library\", \"design a gem API\", or mentions of Andrew Kane's style.",
   "ce-changelog":
     "Create engaging changelogs for recent merges to main branch",
+  "compound-refresh":
+    "Refresh stale or drifting learnings and pattern docs in docs/solutions/ by reviewing, updating, consolidating, replacing, or deleting them against the current codebase. Use after refactors, migrations, dependency upgrades, or when a retrieved learning feels outdated or wrong. Also use when reviewing docs/solutions/ for accuracy, when a recently solved problem contradicts an existing learning, when pattern docs no longer reflect current code, or when multiple docs seem to cover the same topic and might benefit from consolidation.",
   "ce-deploy-docs":
     "Validate and prepare documentation for GitHub Pages deployment",
   "ce-dspy-ruby":
@@ -301,6 +332,37 @@ const LEGACY_ONLY_SKILL_DESCRIPTIONS: Record<string, string> = {
     "Extract conversation skeleton or error signals from a single session file at a given path. Invoked by session-research agents after they have selected which sessions to deep-dive — not intended for direct user queries.",
   "ce-session-inventory":
     "Discover session files for a repo across Claude Code, Codex, and Cursor, and extract session metadata (timestamps, branch, cwd, size, platform). Invoked by session-research agents — not intended for direct user queries.",
+  "ce-slack-research":
+    "Search Slack for interpreted organizational context -- decisions, constraints, and discussion arcs -- and produce a synthesized research digest with cross-cutting analysis. Use when the user says 'search slack for', 'what did we discuss about', 'slack context for', or 'what does the team think about'. Differs from slack:find-discussions, which returns raw message results without synthesis.",
+  "ce-dhh-rails-style":
+    "This skill should be used when writing Ruby and Rails code in DHH's distinctive 37signals style. It applies when writing Ruby code, Rails applications, creating models, controllers, or any Ruby file. Triggers on Ruby/Rails code generation, refactoring requests, code review, or when the user mentions DHH, 37signals, Basecamp, HEY, or Campfire style. Embodies REST purity, fat models, thin controllers, Current attributes, Hotwire patterns, and the \"clarity over cleverness\" philosophy.",
+  "ce-test-xcode":
+    "Build and test iOS apps on simulator using XcodeBuildMCP. Use after making iOS code changes, before creating a PR, or when verifying app behavior and checking for crashes on simulator.",
+  "ce-riffrec-feedback-analysis":
+    "Riffrec product-feedback workflow. ALWAYS load when the user posts a `riffrec-*.zip`, a bundle with `session.json` + `events.json` + `recording.webm` + `voice.webm`, a video/audio recording for product feedback, or asks how to capture and share Riffrec sessions. Routes between setup, quick bug report, and extensive analysis.",
+  "ce-product-pulse":
+    "Generate a time-windowed pulse report on what users experienced and how the product performed - usage, quality, errors, signals worth investigating. Use when the user says 'run a pulse', 'show me the pulse', 'how are we doing', 'weekly recap', 'launch-day check', or passes a time window like '24h' or '7d'. Configures via .compound-engineering/config.local.yaml and saves reports to docs/pulse-reports/.",
+  "ce-proof":
+    "Run human-in-the-loop review loops over markdown via Proof (proofeditor.ai) — share, view, comment on, edit, and sync collaborative docs. Use when the user says \"view this in proof\", \"share to proof\", \"HITL this doc\", or wants a shared markdown review surface for a spec, plan, or draft, including handoffs from ce-brainstorm, ce-ideate, or ce-plan. Do not trigger on \"proof\" meaning evidence, math proofs, proof-of-concept, or \"proofread this\".",
+  "ce-promote":
+    "Draft user-facing announcement and marketing copy for a feature that just shipped — an X post or thread, a changelog blurb, a LinkedIn post, an email, a blog intro, or a short demo script. Spiral-agnostic by default; voice-matched via the Spiral CLI when it is installed and authed. Use when the user says 'promote this', 'draft the announcement', 'write the launch copy', 'market this feature', 'announce this feature', 'write the release tweet', or 'ce-promote'.",
+  "ce-gemini-imagegen":
+    "This skill should be used when generating and editing images using the Gemini API (Nano Banana Pro). It applies when creating images from text prompts, editing existing images, applying style transfers, generating logos with text, creating stickers, product mockups, or any image generation/manipulation task. Supports text-to-image, image editing, multi-turn refinement, and composition from multiple reference images.",
+  // ce-work-beta was merged into ce-work (delegation mode promoted to stable).
+  // Provide descriptions for both the ce: and ce- naming eras so cleanup
+  // can fingerprint installs from either era after the skill dir is gone.
+  "ce:work-beta":
+    "[BETA] Execute work with external delegate support. Same as ce:work but includes experimental Codex delegation mode for token-conserving code implementation.",
+  "ce-work-beta":
+    "[BETA] Execute work with external delegate support. Same as ce-work but includes experimental Codex delegation mode for token-conserving code implementation.",
+
+  // ce-commit was merged into ce-commit-push-pr (commit-only mode). Provide
+  // the historical description for both the merged skill and the legacy
+  // git-commit dir so cleanup can fingerprint installs from either era.
+  "ce-commit":
+    "Create a git commit with a clear, value-communicating message. Use when the user says \"commit\", \"commit this\", \"save my changes\", \"create a commit\", or wants to commit staged or unstaged work. Produces well-structured commit messages that follow repo conventions when they exist, and defaults to conventional commit format otherwise.",
+  "git-commit":
+    "Create a git commit with a clear, value-communicating message. Use when the user says \"commit\", \"commit this\", \"save my changes\", \"create a commit\", or wants to commit staged or unstaged work. Produces well-structured commit messages that follow repo conventions when they exist, and defaults to conventional commit format otherwise.",
 }
 
 /**
@@ -349,6 +411,16 @@ const LEGACY_ONLY_AGENT_DESCRIPTIONS: Record<string, string> = {
     "Conditional code-review persona, selected when the diff touches TypeScript code. Reviews changes with Kieran's strict bar for type safety, clarity, and maintainability.",
   "ce-schema-drift-detector":
     "Detects unrelated schema.rb changes in PRs by cross-referencing against included migrations. Use when reviewing PRs with database schema changes.",
+  "ce-ankane-readme-writer":
+    "Creates or updates README files following Ankane-style template for Ruby gems. Use when writing gem documentation with imperative voice, concise prose, and standard section ordering.",
+  "ce-design-implementation-reviewer":
+    "Visually compares live UI implementation against Figma designs and provides detailed feedback on discrepancies. Use after writing or modifying HTML/CSS/React components to verify design fidelity.",
+  "ce-design-iterator":
+    "Iteratively refines UI design through N screenshot-analyze-improve cycles. Use PROACTIVELY when design changes aren't coming together after 1-2 attempts, or when user requests iterative refinement.",
+  "slack-researcher":
+    "Searches Slack for organizational context -- decisions, constraints, and discussions that may not be documented elsewhere. Use when the user explicitly asks to search Slack for context during ideation, planning, or brainstorming.",
+  "ce-slack-researcher":
+    "Searches Slack for organizational context -- decisions, constraints, and discussions that may not be documented elsewhere. Use when the user explicitly asks to search Slack for context during ideation, planning, or brainstorming.",
 }
 
 type LegacyFingerprints = {

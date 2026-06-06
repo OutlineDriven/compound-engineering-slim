@@ -71,7 +71,8 @@ describe("cleanupStaleSkillDirs", () => {
       path.join(root, "git-commit"),
       skillContent(
         "git-commit",
-        await pluginDescription("plugins/compound-engineering/skills/ce-commit/SKILL.md"),
+        // ce-commit was merged into ce-commit-push-pr; use hardcoded historical description
+        "Create a git commit with a clear, value-communicating message. Use when the user says \"commit\", \"commit this\", \"save my changes\", \"create a commit\", or wants to commit staged or unstaged work. Produces well-structured commit messages that follow repo conventions when they exist, and defaults to conventional commit format otherwise.",
       ),
     )
     await createDir(
@@ -352,7 +353,7 @@ describe("cleanupStaleAgents", () => {
       path.join(root, "slack-researcher.json"),
       kiroAgentConfigContent(
         "slack-researcher",
-        await pluginDescription("plugins/compound-engineering/agents/ce-slack-researcher.md"),
+        "Searches Slack for organizational context -- decisions, constraints, and discussions that may not be documented elsewhere. Use when the user explicitly asks to search Slack for context during ideation, planning, or brainstorming.",
       ),
     )
     await createFile(
@@ -541,8 +542,9 @@ describe("cleanupStalePrompts", () => {
       path.join(root, "ce-work-beta.md"),
       legacyWorkflowPromptContent(
         "ce:work-beta",
-        (await pluginDescription("plugins/compound-engineering/skills/ce-work-beta/SKILL.md"))
-          .replaceAll("ce-", "ce:"),
+        // ce-work-beta was merged into ce-work; use the last shipped description
+        // (with ce- → ce: transform applied, matching a legacy-workflow install).
+        "[BETA] Execute work with external delegate support. Same as ce:work but includes experimental Codex delegation mode for token-conserving code implementation.",
       ),
     )
 
@@ -675,7 +677,8 @@ describe("idempotency", () => {
       path.join(root, "git-commit"),
       skillContent(
         "git-commit",
-        await pluginDescription("plugins/compound-engineering/skills/ce-commit/SKILL.md"),
+        // ce-commit was merged into ce-commit-push-pr; use hardcoded historical description
+        "Create a git commit with a clear, value-communicating message. Use when the user says \"commit\", \"commit this\", \"save my changes\", \"create a commit\", or wants to commit staged or unstaged work. Produces well-structured commit messages that follow repo conventions when they exist, and defaults to conventional commit format otherwise.",
       ),
     )
     await createFile(

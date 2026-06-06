@@ -238,7 +238,7 @@ Use the platform's blocking question tool (`AskUserQuestion` in Claude Code, `re
 Options:
 
 1. **Commit and open a PR (`/ce-commit-push-pr`)** — default for most cases
-2. **Commit the fix (`/ce-commit`)** — local commit only
+2. **Commit only, no PR** — say "just commit, no PR" to `/ce-commit-push-pr`; the skill detects commit-only intent and stops after Step 3 without pushing
 3. **Stop here** — user takes it from there
 
 #### After a PR is open (either path): consider offering learning capture

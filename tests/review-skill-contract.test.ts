@@ -445,7 +445,6 @@ describe("ce-code-review contract", () => {
       "ce-adversarial-reviewer",
       "ce-previous-comments-reviewer",
       "ce-julik-frontend-races-reviewer",
-      "ce-swift-ios-reviewer",
       "ce-agent-native-reviewer",
     ]
 
@@ -469,7 +468,7 @@ describe("ce-code-review contract", () => {
       "plugins/compound-engineering/skills/ce-code-review/references/persona-catalog.md",
     )
 
-    for (const agent of ["ce-julik-frontend-races-reviewer", "ce-swift-ios-reviewer"]) {
+    for (const agent of ["ce-julik-frontend-races-reviewer"]) {
       expect(content).toContain(agent)
       expect(catalog).toContain(agent)
     }
@@ -493,10 +492,6 @@ describe("ce-code-review contract", () => {
       {
         path: "plugins/compound-engineering/agents/ce-julik-frontend-races-reviewer.md",
         reviewer: "julik-frontend-races",
-      },
-      {
-        path: "plugins/compound-engineering/agents/ce-swift-ios-reviewer.md",
-        reviewer: "swift-ios",
       },
     ]
 
@@ -535,7 +530,6 @@ describe("ce-code-review contract", () => {
       "ce-adversarial-reviewer",
       "ce-previous-comments-reviewer",
       "ce-julik-frontend-races-reviewer",
-      "ce-swift-ios-reviewer",
     ]
 
     for (const persona of personas) {
@@ -610,7 +604,6 @@ describe("ce-code-review contract", () => {
   test("ce-work shipping-workflow enforces a residual-work gate after Tier 2 review", async () => {
     for (const path of [
       "plugins/compound-engineering/skills/ce-work/references/shipping-workflow.md",
-      "plugins/compound-engineering/skills/ce-work-beta/references/shipping-workflow.md",
     ]) {
       const workflow = await readRepoFile(path)
       await expect(readRepoFile(path.replace("shipping-workflow.md", "tracker-defer.md"))).resolves.toContain(
@@ -633,7 +626,7 @@ describe("ce-code-review contract", () => {
       // Accept-and-proceed path threads findings into the PR description.
       expect(workflow).toContain("Known Residuals")
       expect(workflow).toContain("docs/residual-review-findings/<branch-or-head-sha>.md")
-      expect(workflow).toContain("If the user later chooses the no-PR `ce-commit` path")
+      expect(workflow).toContain("If the user later chooses the no-PR commit-only path")
       expect(workflow).toContain("must not live only in the transient session")
     }
   })
