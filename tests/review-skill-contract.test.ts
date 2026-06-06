@@ -12,10 +12,12 @@ describe("ce-code-review contract", () => {
     const content = await readRepoFile("plugins/compound-engineering/skills/ce-code-review/SKILL.md")
 
     expect(content).toContain("## Argument Parsing")
-    expect(content).toContain("mode:autofix` is no longer supported")
-    expect(content).toContain("mode:report-only")
     expect(content).toContain("mode:agent")
-    expect(content).toContain("mode:headless")
+    // Dead mode tokens are demolished — only mode:agent is a real mode.
+    expect(content).not.toContain("mode:headless")
+    expect(content).not.toContain("mode:autofix")
+    expect(content).not.toContain("mode:report-only")
+    expect(content).not.toContain("Deprecated alias")
     expect(content).toContain("/tmp/compound-engineering/ce-code-review/<run-id>/")
     expect(content).toMatch(/Never push, open PRs, or file tickets/i)
     expect(content).toContain("run artifact")
@@ -64,8 +66,11 @@ describe("ce-code-review contract", () => {
     // Structured failure JSON
     expect(content).toContain('{"status":"failed","reason":"..."}')
 
-    // Deprecated alias preserved
-    expect(content).toContain("**Deprecated alias**")
+    // Dead mode tokens are demolished — only mode:agent is recognized
+    expect(content).not.toContain("mode:headless")
+    expect(content).not.toContain("mode:autofix")
+    expect(content).not.toContain("mode:report-only")
+    expect(content).not.toContain("Deprecated alias")
   })
 
   test("documents policy-driven routing and actionable handoff", async () => {
