@@ -125,6 +125,7 @@ const EXTRA_LEGACY_ARTIFACTS_BY_PLUGIN: Record<string, LegacyPluginArtifacts> = 
       "lfg",
       "ce-report-bug",
       "ce-strategy",
+      "ce-dogfood-beta",
       "todo-create",
       "todo-resolve",
       "todo-triage",
