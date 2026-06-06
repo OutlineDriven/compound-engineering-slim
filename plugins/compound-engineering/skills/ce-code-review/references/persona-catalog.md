@@ -1,6 +1,6 @@
 # Persona Catalog
 
-6 reviewer personas organized into always-on and cross-cutting conditional layers, plus a CE-specific agent. The orchestrator uses this catalog to select which reviewers to spawn for each review.
+6 reviewer personas in always-on and cross-cutting conditional layers, plus a CE-specific agent. The orchestrator uses this catalog to select which reviewers to spawn per review.
 
 ## Always-on (2 personas + 1 CE agent)
 
@@ -21,7 +21,7 @@ Spawned on every review regardless of diff content.
 
 ## Conditional (4 personas)
 
-Spawned when the orchestrator identifies relevant patterns in the diff. The orchestrator reads the full diff and reasons about selection -- this is agent judgment, not keyword matching.
+Spawned when the orchestrator identifies relevant patterns in the diff. The orchestrator reads the full diff and reasons about selection: agent judgment, not keyword matching.
 
 | Persona | Agent | Select when diff touches... |
 |---------|-------|---------------------------|
@@ -33,5 +33,5 @@ Spawned when the orchestrator identifies relevant patterns in the diff. The orch
 ## Selection rules
 
 1. **Always spawn both always-on personas** plus the CE always-on agent (`ce-learnings-researcher`).
-2. **For each cross-cutting conditional persona**, the orchestrator reads the diff and decides whether the persona's domain is relevant. This is a judgment call, not a keyword match.
+2. **For each cross-cutting conditional persona**, read the diff and decide whether the persona's domain is relevant. A judgment call, not a keyword match.
 3. **Announce the team** before spawning with a one-line justification per conditional reviewer selected.
