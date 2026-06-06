@@ -276,8 +276,9 @@ function resolveOutputRoot(value: unknown): string {
 async function resolveBundledPluginPath(pluginName: string): Promise<string | null> {
   const bundledRoot = fileURLToPath(new URL("../../plugins/", import.meta.url))
   const pluginPath = path.join(bundledRoot, pluginName)
-  const manifestPath = path.join(pluginPath, ".claude-plugin", "plugin.json")
-  if (await pathExists(manifestPath)) {
+  const claudeManifestPath = path.join(pluginPath, ".claude-plugin", "plugin.json")
+  const codexManifestPath = path.join(pluginPath, ".codex-plugin", "plugin.json")
+  if ((await pathExists(claudeManifestPath)) || (await pathExists(codexManifestPath))) {
     return pluginPath
   }
   return null

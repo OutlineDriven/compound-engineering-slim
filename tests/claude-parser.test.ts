@@ -32,6 +32,76 @@ async function makeMinimalPluginRoot(): Promise<string> {
   return root
 }
 
+async function makeCodexPluginRoot(): Promise<string> {
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "claude-parser-codex-"))
+  tempRoots.push(root)
+  await fs.mkdir(path.join(root, ".codex-plugin"), { recursive: true })
+  await fs.mkdir(path.join(root, "agents"), { recursive: true })
+  await fs.mkdir(path.join(root, "commands"), { recursive: true })
+  await fs.mkdir(path.join(root, "skills", "codex-skill"), { recursive: true })
+  await fs.mkdir(path.join(root, "hooks"), { recursive: true })
+  await fs.writeFile(
+    path.join(root, ".codex-plugin", "plugin.json"),
+    JSON.stringify(
+      {
+        name: "codex-native",
+        version: "1.2.3",
+        description: "Codex-native plugin fixture",
+        author: { name: "Fixture Author" },
+        keywords: ["codex", "fixture"],
+        skills: "./skills/",
+        interface: { displayName: "Codex Native" },
+        apps: [{ name: "ignored-app" }],
+      },
+      null,
+      2,
+    ),
+  )
+  await fs.writeFile(
+    path.join(root, "agents", "codex-agent.md"),
+    `---
+name: codex-agent
+description: Codex agent
+---
+
+Review Codex input.
+`,
+  )
+  await fs.writeFile(
+    path.join(root, "commands", "codex-command.md"),
+    `---
+name: codex:command
+description: Codex command
+---
+
+Run Codex command.
+`,
+  )
+  await fs.writeFile(
+    path.join(root, "skills", "codex-skill", "SKILL.md"),
+    `---
+name: codex-skill
+description: Codex skill
+---
+
+Use Codex skill.
+`,
+  )
+  await fs.writeFile(
+    path.join(root, "hooks", "hooks.json"),
+    JSON.stringify({
+      hooks: {
+        PreToolUse: [{ matcher: "Bash", hooks: [{ type: "command", command: "echo codex" }] }],
+      },
+    }),
+  )
+  await fs.writeFile(
+    path.join(root, ".mcp.json"),
+    JSON.stringify({ mcpServers: { codex: { command: "echo", args: ["mcp"] } } }),
+  )
+  return root
+}
+
 describe("loadClaudePlugin", () => {
   test("current compound-engineering plugin ships skills and agents but no source commands", async () => {
     const plugin = await loadClaudePlugin(compoundPluginRoot)
@@ -141,6 +211,83 @@ describe("loadClaudePlugin", () => {
     expect(plugin.mcpServers?.remote?.url).toBe("https://example.com/stream")
   })
 
+  test("loads a Codex-only plugin root", async () => {
+    const root = await makeCodexPluginRoot()
+
+    const plugin = await loadClaudePlugin(root)
+
+    expect(plugin.root).toBe(root)
+    expect(plugin.manifest.name).toBe("codex-native")
+    expect(plugin.manifest.version).toBe("1.2.3")
+    expect(plugin.manifest.description).toBe("Codex-native plugin fixture")
+    expect(plugin.manifest.author?.name).toBe("Fixture Author")
+    expect(plugin.manifest.keywords).toEqual(["codex", "fixture"])
+    expect(plugin.agents.map((agent) => agent.name)).toEqual(["codex-agent"])
+    expect(plugin.commands.map((command) => command.name)).toEqual(["codex:command"])
+    expect(plugin.skills.map((skill) => skill.name)).toEqual(["codex-skill"])
+    expect(plugin.hooks?.hooks.PreToolUse?.[0]?.hooks[0]?.command).toBe("echo codex")
+    expect(plugin.mcpServers?.codex?.command).toBe("echo")
+  })
+
+  test("loads an exact .codex-plugin/plugin.json path", async () => {
+    const root = await makeCodexPluginRoot()
+
+    const plugin = await loadClaudePlugin(path.join(root, ".codex-plugin", "plugin.json"))
+
+    expect(plugin.root).toBe(root)
+    expect(plugin.manifest.name).toBe("codex-native")
+    expect(plugin.skills.map((skill) => skill.name)).toEqual(["codex-skill"])
+  })
+
+  test("prefers Claude manifests for plugin roots with both manifest formats", async () => {
+    const root = await makeCodexPluginRoot()
+    await fs.mkdir(path.join(root, ".claude-plugin"), { recursive: true })
+    await fs.writeFile(
+      path.join(root, ".claude-plugin", "plugin.json"),
+      JSON.stringify({ name: "claude-canonical", version: "9.9.9", skills: "./skills/" }, null, 2),
+    )
+
+    const plugin = await loadClaudePlugin(root)
+
+    expect(plugin.manifest.name).toBe("claude-canonical")
+    expect(plugin.manifest.version).toBe("9.9.9")
+  })
+
+  test("honors an exact Codex manifest path even when a Claude manifest exists", async () => {
+    const root = await makeCodexPluginRoot()
+    await fs.mkdir(path.join(root, ".claude-plugin"), { recursive: true })
+    await fs.writeFile(
+      path.join(root, ".claude-plugin", "plugin.json"),
+      JSON.stringify({ name: "claude-canonical", version: "9.9.9" }, null, 2),
+    )
+
+    const plugin = await loadClaudePlugin(path.join(root, ".codex-plugin", "plugin.json"))
+
+    expect(plugin.manifest.name).toBe("codex-native")
+    expect(plugin.manifest.version).toBe("1.2.3")
+  })
+
+  test("rejects lookalike Codex manifest directories", async () => {
+    const root = await makeCodexPluginRoot()
+    await fs.mkdir(path.join(root, "evil.codex-plugin"), { recursive: true })
+    await fs.writeFile(
+      path.join(root, "evil.codex-plugin", "plugin.json"),
+      JSON.stringify({ name: "lookalike", version: "1.0.0" }, null, 2),
+    )
+
+    await expect(loadClaudePlugin(path.join(root, "evil.codex-plugin", "plugin.json"))).rejects.toThrow(
+      "Could not find .claude-plugin/plugin.json or .codex-plugin/plugin.json",
+    )
+  })
+
+  test("does not duplicate default skill directories declared by a Codex manifest", async () => {
+    const root = await makeCodexPluginRoot()
+
+    const plugin = await loadClaudePlugin(root)
+
+    expect(plugin.skills.map((skill) => skill.name)).toEqual(["codex-skill"])
+  })
+
   test("merges default and custom component paths", async () => {
     const plugin = await loadClaudePlugin(customPathsRoot)
     expect(plugin.agents.map((agent) => agent.name).sort()).toEqual(["custom-agent", "default-agent"])
@@ -165,6 +312,15 @@ describe("loadClaudePlugin", () => {
   test("rejects MCP paths that escape the plugin root", async () => {
     await expect(loadClaudePlugin(invalidMcpPathRoot)).rejects.toThrow(
       "Invalid mcpServers path: ../outside-mcp.json. Paths must stay within the plugin root.",
+    )
+  })
+
+  test("reports both accepted manifest locations when no plugin manifest exists", async () => {
+    const root = await fs.mkdtemp(path.join(os.tmpdir(), "claude-parser-missing-manifest-"))
+    tempRoots.push(root)
+
+    await expect(loadClaudePlugin(root)).rejects.toThrow(
+      "Could not find .claude-plugin/plugin.json or .codex-plugin/plugin.json",
     )
   })
 

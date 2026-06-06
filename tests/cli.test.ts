@@ -26,6 +26,49 @@ async function runGit(args: string[], cwd: string, env?: NodeJS.ProcessEnv): Pro
   }
  }
 
+async function makeCodexPluginFixture(): Promise<string> {
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "cli-codex-plugin-fixture-"))
+  __tempRoots.push(root)
+  await fs.mkdir(path.join(root, ".codex-plugin"), { recursive: true })
+  await fs.mkdir(path.join(root, "agents"), { recursive: true })
+  await fs.mkdir(path.join(root, "skills", "codex-skill"), { recursive: true })
+  await fs.writeFile(
+    path.join(root, ".codex-plugin", "plugin.json"),
+    JSON.stringify(
+      {
+        name: "codex-native",
+        version: "1.0.0",
+        description: "Codex-native plugin fixture",
+        skills: "./skills/",
+        interface: { displayName: "Codex Native" },
+      },
+      null,
+      2,
+    ),
+  )
+  await fs.writeFile(
+    path.join(root, "agents", "codex-agent.md"),
+    `---
+name: codex-agent
+description: Codex agent
+---
+
+Run Codex agent.
+`,
+  )
+  await fs.writeFile(
+    path.join(root, "skills", "codex-skill", "SKILL.md"),
+    `---
+name: codex-skill
+description: Codex skill
+---
+
+Use Codex skill.
+`,
+  )
+  return root
+}
+
 const __tempRoots: string[] = []
 
 afterEach(async () => {
@@ -1192,6 +1235,49 @@ describe("CLI", () => {
     // AGENTS.md is emitted because --to codex always ensures a root AGENTS.md
     // exists for Codex's discovery chain.
     expect(await exists(path.join(codexRoot, "AGENTS.md"))).toBe(true)
+  })
+
+  test("install accepts a Codex-native plugin root for codex output", async () => {
+    const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "cli-codex-native-home-"))
+    __tempRoots.push(tempRoot)
+    const workspaceRoot = await fs.mkdtemp(path.join(os.tmpdir(), "cli-codex-native-ws-"))
+    __tempRoots.push(workspaceRoot)
+    const projectRoot = path.join(import.meta.dir, "..")
+    const fixtureRoot = await makeCodexPluginFixture()
+    const codexHome = path.join(tempRoot, "codex-home")
+
+    const proc = Bun.spawn([
+      "bun",
+      "run",
+      path.join(projectRoot, "src", "index.ts"),
+      "install",
+      fixtureRoot,
+      "--to",
+      "codex",
+      "--codex-home",
+      codexHome,
+    ], {
+      cwd: workspaceRoot,
+      stdout: "pipe",
+      stderr: "pipe",
+      env: {
+        ...process.env,
+        HOME: tempRoot,
+      },
+    })
+
+    const exitCode = await proc.exited
+    const stdout = await new Response(proc.stdout).text()
+    const stderr = await new Response(proc.stderr).text()
+
+    if (exitCode !== 0) {
+      throw new Error(`CLI failed (exit ${exitCode}).\nstdout: ${stdout}\nstderr: ${stderr}`)
+    }
+
+    expect(stdout).toContain("Installed codex-native")
+    expect(await exists(path.join(codexHome, "agents", "codex-native", "codex-agent.toml"))).toBe(true)
+    expect(await exists(path.join(codexHome, "skills", "codex-native", "codex-skill", "SKILL.md"))).toBe(false)
+    expect(await exists(path.join(codexHome, "AGENTS.md"))).toBe(true)
   })
 
   test("install --to codex respects CODEX_HOME when --codex-home is omitted", async () => {

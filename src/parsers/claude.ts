@@ -11,11 +11,19 @@ import type {
   ClaudeSkill,
 } from "../types/claude"
 
-const PLUGIN_MANIFEST = path.join(".claude-plugin", "plugin.json")
+const CLAUDE_PLUGIN_MANIFEST = path.join(".claude-plugin", "plugin.json")
+const CODEX_PLUGIN_MANIFEST = path.join(".codex-plugin", "plugin.json")
+
+type PluginManifestKind = "claude" | "codex"
+
+type ResolvedPluginManifest = {
+  root: string
+  manifestPath: string
+  kind: PluginManifestKind
+}
 
 export async function loadClaudePlugin(inputPath: string): Promise<ClaudePlugin> {
-  const root = await resolveClaudeRoot(inputPath)
-  const manifestPath = path.join(root, PLUGIN_MANIFEST)
+  const { root, manifestPath } = await resolvePluginManifest(inputPath)
   const manifest = await readJson<ClaudeManifest>(manifestPath)
 
   const agents = await loadAgents(resolveComponentDirs(root, "agents", manifest.agents))
@@ -36,22 +44,55 @@ export async function loadClaudePlugin(inputPath: string): Promise<ClaudePlugin>
   }
 }
 
-async function resolveClaudeRoot(inputPath: string): Promise<string> {
+async function resolvePluginManifest(inputPath: string): Promise<ResolvedPluginManifest> {
   const absolute = path.resolve(inputPath)
-  const manifestAtPath = path.join(absolute, PLUGIN_MANIFEST)
-  if (await pathExists(manifestAtPath)) {
-    return absolute
+  const explicitManifestKind = getExplicitManifestKind(absolute)
+
+  if (explicitManifestKind === "claude") {
+    return {
+      root: path.dirname(path.dirname(absolute)),
+      manifestPath: absolute,
+      kind: "claude",
+    }
   }
 
-  if (absolute.endsWith(PLUGIN_MANIFEST)) {
-    return path.dirname(path.dirname(absolute))
+  if (explicitManifestKind === "codex") {
+    return {
+      root: path.dirname(path.dirname(absolute)),
+      manifestPath: absolute,
+      kind: "codex",
+    }
   }
 
-  if (absolute.endsWith("plugin.json")) {
-    return path.dirname(path.dirname(absolute))
+  const claudeManifestAtRoot = path.join(absolute, CLAUDE_PLUGIN_MANIFEST)
+  if (await pathExists(claudeManifestAtRoot)) {
+    return {
+      root: absolute,
+      manifestPath: claudeManifestAtRoot,
+      kind: "claude",
+    }
   }
 
-  throw new Error(`Could not find ${PLUGIN_MANIFEST} under ${inputPath}`)
+  const codexManifestAtRoot = path.join(absolute, CODEX_PLUGIN_MANIFEST)
+  if (await pathExists(codexManifestAtRoot)) {
+    return {
+      root: absolute,
+      manifestPath: codexManifestAtRoot,
+      kind: "codex",
+    }
+  }
+
+  throw new Error(
+    `Could not find ${CLAUDE_PLUGIN_MANIFEST} or ${CODEX_PLUGIN_MANIFEST} under ${inputPath}`,
+  )
+}
+
+function getExplicitManifestKind(filePath: string): PluginManifestKind | undefined {
+  if (path.basename(filePath) !== "plugin.json") return undefined
+  const manifestDir = path.basename(path.dirname(filePath))
+  if (manifestDir === ".claude-plugin") return "claude"
+  if (manifestDir === ".codex-plugin") return "codex"
+  return undefined
 }
 
 async function loadAgents(agentsDirs: string[]): Promise<ClaudeAgent[]> {
@@ -191,7 +232,7 @@ function resolveComponentDirs(
   for (const entry of toPathList(custom)) {
     dirs.push(resolveWithinRoot(root, entry, `${defaultDir} path`))
   }
-  return dirs
+  return [...new Set(dirs.map((dir) => path.resolve(dir)))]
 }
 
 function toPathList(value?: string | string[]): string[] {
