@@ -35,6 +35,8 @@
       "Write"
     ],
     "websiteURL": "https://every.to/source-code/my-ai-had-already-fixed-the-code-before-i-saw-it",
+    "privacyPolicyURL": "https://every.to/legal",
+    "termsOfServiceURL": "https://every.to/legal",
     "defaultPrompt": [
       "/ce-brainstorm a new feature",
       "/ce-plan the implementation",
