@@ -186,4 +186,3 @@ Because partial blur is a known-bad mitigation — even cropped or blurred secre
 
 - [`ce-commit-push-pr`](./ce-commit-push-pr.md) — primary caller; splices the captured evidence into PR descriptions
 - [`ce-work`](./ce-work.md) — flags evidence context at Phase 4.1 so the PR flow can ask the right question
-- [`ce-test-browser`](./ce-test-browser.md) — sibling skill for end-to-end browser testing (different goal: verify behavior, not capture)

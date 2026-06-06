@@ -126,6 +126,7 @@ const EXTRA_LEGACY_ARTIFACTS_BY_PLUGIN: Record<string, LegacyPluginArtifacts> = 
       "ce-report-bug",
       "ce-strategy",
       "ce-dogfood-beta",
+      "ce-test-browser",
       "todo-create",
       "todo-resolve",
       "todo-triage",

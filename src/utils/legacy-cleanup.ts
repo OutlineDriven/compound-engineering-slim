@@ -140,6 +140,10 @@ export const STALE_SKILL_DIRS = [
 
   // Removed diff-scoped browser QA dogfood skill (slim/ultra-minimal)
   "ce-dogfood-beta",
+
+  // Removed end-to-end browser testing skill (slim/ultra-minimal). The renamed-era
+  // "test-browser" entry above stays; this is the current-era dir name.
+  "ce-test-browser",
 ]
 
 /** Old agent names (used as generated skill dirs or flat .md files). */
@@ -407,6 +411,10 @@ const LEGACY_ONLY_SKILL_DESCRIPTIONS: Record<string, string> = {
   // ce-dogfood-beta was the diff-scoped browser QA dogfood skill (removed, no replacement).
   "ce-dogfood-beta":
     "[BETA] Dogfood the active branch end-to-end as a QA engineer. Diffs the branch against main, builds an exhaustive browser test matrix of every change (full user journeys, not just features), drives the app with agent-browser, then auto-fixes issues, adds regression tests, and commits each fix until the matrix is green. Use when you want a hands-off 'test everything we just built and make it actually work' pass before shipping.",
+
+  // ce-test-browser was the end-to-end browser testing skill (removed, no replacement).
+  "ce-test-browser":
+    "Run browser tests on pages affected by current PR or branch",
 }
 
 /**
