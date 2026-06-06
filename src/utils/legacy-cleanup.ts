@@ -220,6 +220,7 @@ const STALE_AGENT_NAMES = [
   "design-implementation-reviewer",
   "design-iterator",
   "design-lens-reviewer",
+  "ce-design-lens-reviewer",
   "dhh-rails-reviewer",
   "feasibility-reviewer",
   "figma-design-sync",
@@ -243,6 +244,7 @@ const STALE_AGENT_NAMES = [
   "pr-comment-resolver",
   "ce-pr-comment-resolver",
   "product-lens-reviewer",
+  "ce-product-lens-reviewer",
   "project-standards-reviewer",
   "ce-project-standards-reviewer",
   "reliability-reviewer",
@@ -253,7 +255,9 @@ const STALE_AGENT_NAMES = [
   "slack-researcher",
   "ce-slack-researcher",
   "scope-guardian-reviewer",
+  "ce-scope-guardian-reviewer",
   "security-lens-reviewer",
+  "ce-security-lens-reviewer",
   "security-reviewer",
   "security-sentinel",
   "spec-flow-analyzer",
@@ -625,6 +629,30 @@ const LEGACY_ONLY_AGENT_DESCRIPTIONS: Record<string, string> = {
     "Produces Go/No-Go deployment checklists with SQL verification queries, rollback procedures, and monitoring plans. Use when PRs touch production data, migrations, or risky data changes.",
   "ce-deployment-verification-agent":
     "Produces Go/No-Go deployment checklists with SQL verification queries, rollback procedures, and monitoring plans. Use when PRs touch production data, migrations, or risky data changes.",
+
+  // Document-review personas consolidated: ce-design-lens-reviewer and
+  // ce-security-lens-reviewer folded into ce-feasibility-reviewer;
+  // ce-product-lens-reviewer and ce-scope-guardian-reviewer folded into
+  // ce-adversarial-document-reviewer (slim/ultra-minimal). The unprefixed
+  // names are fingerprinted via STALE_AGENT_NAMES; both the unprefixed and ce-
+  // entries carry the last shipped descriptions so cleanup can fingerprint
+  // installs from either era after the agent files are gone.
+  "design-lens-reviewer":
+    "Reviews planning documents for missing design decisions -- information architecture, interaction states, user flows, and AI slop risk. Uses dimensional rating to identify gaps. Spawned by the document-review skill.",
+  "ce-design-lens-reviewer":
+    "Reviews planning documents for missing design decisions -- information architecture, interaction states, user flows, and AI slop risk. Uses dimensional rating to identify gaps. Spawned by the document-review skill.",
+  "security-lens-reviewer":
+    "Evaluates planning documents for security gaps at the plan level -- auth/authz assumptions, data exposure risks, API surface vulnerabilities, and missing threat model elements. Spawned by the document-review skill.",
+  "ce-security-lens-reviewer":
+    "Evaluates planning documents for security gaps at the plan level -- auth/authz assumptions, data exposure risks, API surface vulnerabilities, and missing threat model elements. Spawned by the document-review skill.",
+  "product-lens-reviewer":
+    "Reviews planning documents as a senior product leader -- challenges premise claims, assesses strategic consequences (trajectory, identity, adoption, opportunity cost), and surfaces goal-work misalignment. Spawned by the document-review skill.",
+  "ce-product-lens-reviewer":
+    "Reviews planning documents as a senior product leader -- challenges premise claims, assesses strategic consequences (trajectory, identity, adoption, opportunity cost), and surfaces goal-work misalignment. Spawned by the document-review skill.",
+  "scope-guardian-reviewer":
+    "Reviews planning documents for scope alignment and unjustified complexity -- challenges unnecessary abstractions, premature frameworks, and scope that exceeds stated goals. Spawned by the document-review skill.",
+  "ce-scope-guardian-reviewer":
+    "Reviews planning documents for scope alignment and unjustified complexity -- challenges unnecessary abstractions, premature frameworks, and scope that exceeds stated goals. Spawned by the document-review skill.",
 }
 
 type LegacyFingerprints = {

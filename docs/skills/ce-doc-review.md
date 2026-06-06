@@ -35,7 +35,7 @@ Document review is harder than code review in specific ways:
 `ce-doc-review` runs document review as a structured pipeline with explicit gates:
 
 - **Always-on personas** for coherence and feasibility
-- **Conditional personas** selected based on doc content — product-lens, design-lens, security-lens, scope-guardian, adversarial
+- **Conditional persona** selected based on doc content — adversarial (premise, strategic consequences, and scope challenge)
 - **Parallel persona dispatch** with bounded concurrency
 - **Synthesis pipeline** with cross-persona agreement promotion, contradiction resolution, and three-tier routing (`safe_auto`, `gated_auto`, `manual` + FYI)
 - **Decision primer** — round-to-round suppression so rejected findings don't re-surface and applied findings get verification
@@ -47,17 +47,13 @@ Document review is harder than code review in specific ways:
 
 ### 1. Doc-content-aware persona selection
 
-Conditional personas activate based on what the doc actually says, not keyword matching:
+The 2 always-on personas absorb several lenses each, so coverage no longer fans out across one-lens-per-agent personas:
 
-- **`ce-product-lens-reviewer`** — when the doc makes challengeable claims about what to build and why, or when the proposed work carries strategic weight (trajectory, identity, adoption, opportunity cost)
-- **`ce-design-lens-reviewer`** — when the doc contains UI/UX references, user flows, interaction descriptions, or visual design language
-- **`ce-security-lens-reviewer`** — when the doc touches auth, public APIs, data handling, PII, payments, third-party trust boundaries
-- **`ce-scope-guardian-reviewer`** — when the doc has multiple priority tiers, large requirement counts, or scope-boundary language that seems misaligned
-- **`ce-adversarial-document-reviewer`** — when the doc touches high-stakes domains (auth, payments, migrations), proposes new abstractions, has missing or extended origin, contains requirements-shape premise content, or presents explicit alternatives
+- **`ce-coherence-reviewer`** (always-on) — internal consistency, contradictions, terminology drift
+- **`ce-feasibility-reviewer`** (always-on) — technical viability plus an interior design-completeness lens (information architecture, interaction states, user flows, AI slop risk) and security-surface lens (auth/authz, data exposure, third-party trust boundaries, plan-level threat model). It applies the design and security lenses when the doc's content warrants, scoped by doc type — no separate activation needed.
+- **`ce-adversarial-document-reviewer`** (conditional) — premise and assumption challenge plus an interior strategic-consequences lens (trajectory, identity, adoption, opportunity cost) and scope-and-complexity lens (scope-goal alignment, unjustified abstractions, premature frameworks). Activates when the doc touches high-stakes domains (auth, payments, migrations), proposes new abstractions, has missing or extended origin, carries multiple priority tiers or a large requirement count, contains requirements-shape premise content, presents explicit alternatives, or stakes a challengeable position on what to build.
 
-The 2 always-on (`ce-coherence-reviewer`, `ce-feasibility-reviewer`) run on every review. Conditional personas add depth where the doc's content warrants it.
-
-Personas also **scope their techniques by doc shape**. On plan-shape docs with `Origin:` set — meaning premise has already been pressure-tested at brainstorm — `ce-product-lens-reviewer`, `ce-adversarial-document-reviewer`, and `ce-scope-guardian-reviewer` suppress their premise-level techniques and run only implementation-level checks (technical assumptions, decision stress-testing, architectural alternatives, deferred-work scope creep). On requirements-shape docs they run their full technique set. `ce-feasibility-reviewer` inverts: shadow-path tracing, implementability, and migration mechanics are scoped to plan-shape docs; on requirements docs it runs a tight "would this direction force a fundamental rework?" check. Doc-type classification happens once in the orchestrator (content-shape signals — frontmatter, R-IDs vs U-IDs, section structure) and the result is passed to every persona via the `Origin:` slot, so personas don't re-classify themselves.
+Personas also **scope their techniques by doc shape**. On plan-shape docs with `Origin:` set — meaning premise has already been pressure-tested at brainstorm — `ce-adversarial-document-reviewer` suppresses its premise-level techniques and runs only implementation-level checks (technical assumptions, decision stress-testing, architectural alternatives, deferred-work scope creep). On requirements-shape docs it runs its full technique set. `ce-feasibility-reviewer` inverts: shadow-path tracing, implementability, and migration mechanics are scoped to plan-shape docs; on requirements docs it runs a tight "would this direction force a fundamental rework?" check, and its design and security lenses tighten to spec-level threat-model and user-flow completeness. Doc-type classification happens once in the orchestrator (content-shape signals — frontmatter, R-IDs vs U-IDs, section structure) and the result is passed to every persona via the `Origin:` slot, so personas don't re-classify themselves.
 
 ### 2. Synthesis pipeline with three-tier routing
 
@@ -122,9 +118,9 @@ The output names which personas ran, which were activated by what signals, and w
 
 `/ce-plan` finishes producing a Standard plan for a notification-mute feature. Phase 5.3.8 invokes `/ce-doc-review` in `mode:headless` with the plan path.
 
-The skill reads the doc, classifies it as `plan` from content-shape signals (U-IDs, plan section structure), reads the `Origin:` slot, and analyzes content for conditional personas. The plan touches a UI surface (mute toggle copy) but no high-stakes domains and proposes no new abstractions. It activates `ce-coherence-reviewer` (always-on), `ce-feasibility-reviewer` (always-on, scoped to plan-shape techniques), and `ce-design-lens-reviewer` (UI surface). Adversarial, scope-guardian, security-lens, and product-lens skip — none of their triggers fire on a routine plan with origin set.
+The skill reads the doc, classifies it as `plan` from content-shape signals (U-IDs, plan section structure), reads the `Origin:` slot, and analyzes content for the conditional persona. The plan touches a UI surface (mute toggle copy) but no high-stakes domains and proposes no new abstractions. It runs `ce-coherence-reviewer` (always-on) and `ce-feasibility-reviewer` (always-on, scoped to plan-shape techniques, with its design lens engaged by the UI surface). Adversarial skips — none of its triggers fire on a routine plan with origin set.
 
-Three reviewers dispatch in parallel. They return 9 raw findings. Synthesis merges them into 6 distinct findings: 2 `safe_auto` (typo, broken cross-reference), 3 `gated_auto` (wording on the durability tradeoff, missing edge case in test scenarios for U2, design-lens flag on the toggle copy), 1 FYI (suggested scope clarification).
+Two reviewers dispatch in parallel. They return 9 raw findings. Synthesis merges them into 6 distinct findings: 2 `safe_auto` (typo, broken cross-reference), 3 `gated_auto` (wording on the durability tradeoff, missing edge case in test scenarios for U2, a design-completeness flag on the toggle copy from feasibility), 1 FYI (suggested scope clarification).
 
 The 2 `safe_auto` apply directly. Headless mode returns the rest as structured text — no walkthrough, no per-finding routing. A single summary line surfaces above the post-generation menu: `Doc review applied 2 fixes. 3 decisions, 1 FYI remain.` The user picks `Start /ce-work` and goes. Had they wanted to address the 3 decisions interactively, they'd have picked `Run deeper doc review` instead.
 

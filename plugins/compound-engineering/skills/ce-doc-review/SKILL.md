@@ -60,42 +60,9 @@ Pass the classification result to each persona via the `{document_type}` slot in
 
 ### Select Conditional Personas
 
-Analyze the document content to determine which conditional personas to activate. Check for these signals:
+`ce-coherence-reviewer` and `ce-feasibility-reviewer` are always-on. `ce-feasibility-reviewer` carries the design-completeness and security-surface lenses interior to its review and scopes them by document type, so design (UI/UX, frontend components, user flows, interaction states, responsive/accessibility) and security (auth/authz, public API endpoints, data handling, PII, payments, credentials, third-party trust boundaries) content needs no separate activation — note it in the announce justification when present so the user sees why those lenses fired.
 
-**product-lens** -- activate when the document makes challengeable claims about what to build and why, or when the proposed work carries strategic weight beyond the immediate problem. The system's users may be end users, developers, operators, maintainers, or any other audience -- the criteria are domain-agnostic. Check for either leg:
-
-*Leg 1 — Premise claims:* The document stakes a position on what to build or why that a knowledgeable stakeholder could reasonably challenge -- not merely describing a task or restating known requirements:
-- Problem framing where the stated need is non-obvious or debatable, not self-evident from existing context
-- Solution selection where alternatives plausibly exist (implicit or explicit)
-- Prioritization decisions that explicitly rank what gets built vs deferred
-- Goal statements that predict specific user outcomes, not just restate constraints or describe deliverables
-
-*Leg 2 — Strategic weight:* The proposed work could affect system trajectory, user perception, or competitive positioning, even if the premise is sound:
-- Changes that shape how the system is perceived or what it becomes known for
-- Complexity or simplicity bets that affect adoption, onboarding, or cognitive load
-- Work that opens or closes future directions (path dependencies, architectural commitments)
-- Opportunity cost implications -- building this means not building something else
-
-**design-lens** -- activate when the document contains:
-- UI/UX references, frontend components, or visual design language
-- User flows, wireframes, screen/page/view mentions
-- Interaction descriptions (forms, buttons, navigation, modals)
-- References to responsive behavior or accessibility
-
-**security-lens** -- activate when the document contains:
-- Auth/authorization mentions, login flows, session management
-- API endpoints exposed to external clients
-- Data handling, PII, payments, tokens, credentials, encryption
-- Third-party integrations with trust boundary implications
-
-**scope-guardian** -- activate when the document contains:
-- Multiple priority tiers (P0/P1/P2, must-have/should-have/nice-to-have)
-- Large requirement count (>8 distinct requirements or implementation units)
-- Stretch goals, nice-to-haves, or "future work" sections
-- Scope boundary language that seems misaligned with stated goals
-- Goals that don't clearly connect to requirements
-
-**adversarial** -- activate when the document contains a high-value challenge surface, not merely structural complexity. Routine plans with stated rationale are not by themselves an adversarial signal — premise/assumption work re-litigates settled questions when the only signal is "this plan is well-structured." Activate when ANY of the following holds:
+The one conditional persona is `ce-adversarial-document-reviewer`. Analyze the document content and activate it when the document presents a high-value challenge surface, not merely structural complexity. Routine plans with stated rationale are not by themselves an adversarial signal — premise/assumption work re-litigates settled questions when the only signal is "this plan is well-structured." Activate when ANY of the following holds:
 
 - The document is a **requirements document** with 2+ challengeable claims (problem framing, solution selection, prioritization, predicted outcomes) -- premise scrutiny is core to the brainstorm phase
 - The document touches a **high-stakes domain** -- auth, payments, billing, data migrations, privacy/compliance, external integrations, cryptography -- regardless of doc type or size
@@ -103,8 +70,11 @@ Analyze the document content to determine which conditional personas to activate
 - The document is a **plan with no `origin:` requirements doc** (greenfield bootstrap) -- premise wasn't validated upstream
 - The document is a **plan that explicitly extends scope** beyond its origin requirements doc (new actors, new flows, deferred-then-restored features)
 - The document contains an **explicit alternatives section** or unresolved tradeoffs -- adversarial helps stress-test the chosen direction
+- The document carries **multiple priority tiers** (P0/P1/P2, must-have/should-have/nice-to-have) or a **large requirement count** (>8 distinct requirements or implementation units) -- scope and complexity warrant a falsification pass
+- The document uses **scope boundary language that seems misaligned** with its stated goals, or has goals that don't clearly connect to requirements
+- The document stakes a **challengeable position on what to build or why** that a knowledgeable stakeholder could reasonably dispute, or carries strategic weight beyond the immediate problem (trajectory, identity, adoption, opportunity cost)
 
-Do NOT activate adversarial on a routine plan document that derives from a validated origin requirements doc, stays within scope, and does not introduce high-stakes domains or new abstractions.
+Do NOT activate adversarial on a routine plan document that derives from a validated origin requirements doc, stays within scope, and does not introduce high-stakes domains, new abstractions, scope sprawl, or contested premises.
 
 ## Phase 2: Announce and Dispatch Personas
 
@@ -115,9 +85,8 @@ Tell the user which personas will review and why. For conditional personas, incl
 ```
 Reviewing with:
 - ce-coherence-reviewer (always-on)
-- ce-feasibility-reviewer (always-on)
-- ce-scope-guardian-reviewer -- plan has 12 requirements across 3 priority levels
-- ce-security-lens-reviewer -- plan adds API endpoints with auth flow
+- ce-feasibility-reviewer (always-on) -- plan adds API endpoints with auth flow; design and security lenses apply
+- ce-adversarial-document-reviewer -- plan has 12 requirements across 3 priority levels
 ```
 
 ### Build Agent List
@@ -126,11 +95,7 @@ Always include:
 - `ce-coherence-reviewer`
 - `ce-feasibility-reviewer`
 
-Add activated conditional personas:
-- `ce-product-lens-reviewer`
-- `ce-design-lens-reviewer`
-- `ce-security-lens-reviewer`
-- `ce-scope-guardian-reviewer`
+Add when its activation triggers fire (see Select Conditional Personas):
 - `ce-adversarial-document-reviewer`
 
 ### Dispatch
@@ -145,7 +110,7 @@ Each agent receives the prompt built from the subagent template included below w
 | `{schema}` | Content of the findings schema included below |
 | `{document_type}` | "requirements" or "plan" from Phase 1 classification |
 | `{document_path}` | Path to the document |
-| `{origin_path}` | Value of the document's `origin:` frontmatter field if present, or the literal string `none` if absent. Personas that adapt on origin (product-lens, adversarial, scope-guardian) read this slot to gate technique suppression — they do NOT re-parse frontmatter themselves. Extract this once during Phase 1 reading. |
+| `{origin_path}` | Value of the document's `origin:` frontmatter field if present, or the literal string `none` if absent. The persona that adapts on origin (adversarial-document) reads this slot to gate technique suppression — it does NOT re-parse frontmatter itself. Extract this once during Phase 1 reading. |
 | `{document_content}` | Full text of the document |
 | `{decision_primer}` | Cumulative prior-round decisions in the current session, or an empty `<prior-decisions>` block on round 1. See "Decision primer" below. |
 

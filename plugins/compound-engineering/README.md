@@ -10,7 +10,7 @@ After installing, run `/ce-setup` in any project. It diagnoses your environment,
 
 | Component | Count |
 |-----------|-------|
-| Agents | 26 |
+| Agents | 22 |
 | Skills | 14 |
 
 ## Skills
@@ -86,12 +86,8 @@ Agents are specialized subagents invoked by skills — you typically don't call 
 | Agent | Description |
 |-------|-------------|
 | `ce-coherence-reviewer` | Review documents for internal consistency, contradictions, and terminology drift |
-| `ce-design-lens-reviewer` | Review plans for missing design decisions, interaction states, and AI slop risk |
-| `ce-feasibility-reviewer` | Evaluate whether proposed technical approaches will survive contact with reality |
-| `ce-product-lens-reviewer` | Challenge problem framing, evaluate scope decisions, surface goal misalignment |
-| `ce-scope-guardian-reviewer` | Challenge unjustified complexity, scope creep, and premature abstractions |
-| `ce-security-lens-reviewer` | Evaluate plans for security gaps at the plan level (auth, data, APIs) |
-| `ce-adversarial-document-reviewer` | Challenge premises, surface unstated assumptions, and stress-test decisions |
+| `ce-feasibility-reviewer` | Evaluate technical viability, design completeness, and plan-level security coverage |
+| `ce-adversarial-document-reviewer` | Challenge premises and assumptions, assess strategic consequences, and stress-test scope decisions |
 
 ### Research
 

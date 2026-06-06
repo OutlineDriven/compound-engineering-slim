@@ -46,7 +46,7 @@ Invoked when a specific need arises — not part of any chain.
 |-------|-------------|
 | [`/ce-debug`](./ce-debug.md) | Find root causes systematically — causal chain gate, predictions for uncertain links, smart escalation |
 | [`/ce-code-review`](./ce-code-review.md) | Structured code review with tiered persona agents, confidence-gated findings, four modes |
-| [`/ce-doc-review`](./ce-doc-review.md) | Review requirements or plan documents using parallel persona agents — coherence, feasibility, product-lens, design-lens, security-lens, scope-guardian, adversarial |
+| [`/ce-doc-review`](./ce-doc-review.md) | Review requirements or plan documents using parallel persona agents — coherence, feasibility (with interior design and security lenses), adversarial-document (with interior strategic and scope lenses) |
 | [`/ce-simplify-code`](./ce-simplify-code.md) | Refine recently changed code — three parallel reviewer agents (reuse, quality, efficiency); behavior preservation verified |
 
 ---
