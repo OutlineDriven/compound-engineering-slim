@@ -232,4 +232,3 @@ Yes — and it's increasingly common. Universal-planning preserves the U-ID conc
 - [`ce-work`](./ce-work.md) — execute the plan U-ID by U-ID
 - [`ce-doc-review`](./ce-doc-review.md) — persona-based review of the plan
 - [`ce-debug`](./ce-debug.md) — bug-shaped prompts route here
-- [`ce-strategy`](./ce-strategy.md) — anchor plans to documented product strategy

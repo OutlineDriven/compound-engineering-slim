@@ -42,16 +42,6 @@ The steps of every engineering iteration. `/ce-ideate` runs only when you need t
 
 ---
 
-## Around the Loop
-
-Skills that anchor, feed, or maintain the loop without being steps inside it.
-
-| Skill | Description |
-|-------|-------------|
-| [`/ce-strategy`](./ce-strategy.md) | Create or maintain `STRATEGY.md` — the upstream anchor read by `ce-ideate`, `ce-brainstorm`, and `ce-plan` as grounding |
-
----
-
 ## On-Demand
 
 Invoked when a specific need arises — not part of any chain.

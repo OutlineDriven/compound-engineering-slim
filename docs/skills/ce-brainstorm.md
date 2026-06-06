@@ -207,4 +207,3 @@ Yes — a domain-agnostic facilitator preserves the one-question-at-a-time disci
 - [`ce-plan`](./ce-plan.md) — turn the requirements doc into an implementation plan
 - [`ce-doc-review`](./ce-doc-review.md) — persona-based review of the requirements doc
 - [`ce-work`](./ce-work.md) — execute lightweight changes directly from a brainstorm
-- [`ce-strategy`](./ce-strategy.md) — anchor brainstorms to a documented product strategy

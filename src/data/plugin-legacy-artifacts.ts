@@ -124,6 +124,7 @@ const EXTRA_LEGACY_ARTIFACTS_BY_PLUGIN: Record<string, LegacyPluginArtifacts> = 
       "ce-gemini-imagegen",
       "lfg",
       "ce-report-bug",
+      "ce-strategy",
       "todo-create",
       "todo-resolve",
       "todo-triage",

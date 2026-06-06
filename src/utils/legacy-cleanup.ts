@@ -134,6 +134,9 @@ export const STALE_SKILL_DIRS = [
   // Removed bug-filing skill (slim/ultra-minimal). The renamed-era
   // "report-bug-ce" entry above stays; this is the current-era dir name.
   "ce-report-bug",
+
+  // Removed upstream-anchor strategy skill (slim/ultra-minimal)
+  "ce-strategy",
 ]
 
 /** Old agent names (used as generated skill dirs or flat .md files). */
@@ -393,6 +396,10 @@ const LEGACY_ONLY_SKILL_DESCRIPTIONS: Record<string, string> = {
   // once the skill dir is gone.
   "ce-report-bug":
     "Report a bug in the compound-engineering plugin",
+
+  // ce-strategy was the upstream-anchor strategy skill (removed, no replacement).
+  "ce-strategy":
+    "Create or maintain STRATEGY.md - the product's target problem, approach, users, key metrics, and tracks of work. Use when starting a new product, updating direction, or when prompts like 'write our strategy', 'update the roadmap', 'what are we working on', or 'set up the strategy doc' come up. Also triggers when ce-ideate, ce-brainstorm, or ce-plan need upstream grounding and no strategy doc exists yet.",
 }
 
 /**
