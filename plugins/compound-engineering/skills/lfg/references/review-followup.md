@@ -8,7 +8,7 @@
 ce-code-review mode:agent plan:<plan-path-from-step-1>
 ```
 
-Read the **Actionable Findings** summary and artifact path. Do not pass `mode:autofix`.
+Read the **Actionable Findings** summary and artifact path.
 
 Capture parsed JSON (`status`, `actionable_findings`, `findings`, `artifact_path`, `run_id`) or the markdown Actionable Findings section. If `status` is `failed`, stop and surface `reason`.
 

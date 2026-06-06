@@ -27,7 +27,6 @@ Compound-engineering relies on multiple external CLIs and per-repo config that's
 - **Skill dependencies** — some skills depend on other agent skills (e.g., `ast-grep` skill); knowing which ones are needed and where to install them is opaque
 - **Plugin version drift** — old installed plugin behaving differently from current docs; without checking, the user files bug reports against fixed bugs
 - **Per-repo config** — `.compound-engineering/config.local.yaml` for machine-local settings; without bootstrapping, skills ask the same questions every run
-- **Stale legacy config** — `compound-engineering.local.md` was the old format; lingering files cause confusion
 - **Gitignore gotchas** — `.compound-engineering/config.local.yaml` should be gitignored (machine-local) but isn't always; the user accidentally commits secrets
 - **Manual setup is tedious** — installing 7 tools one at a time with the right command for each is friction
 
@@ -37,7 +36,6 @@ Compound-engineering relies on multiple external CLIs and per-repo config that's
 
 - **Phase 1: Diagnose** — runs `bash scripts/check-health` once; reports tool/skill installation status, plugin version, repo-local CE config state in one pass
 - **Phase 2: Fix** (only when issues exist):
-  - Resolve repo-local cleanup (delete obsolete `compound-engineering.local.md` if present)
   - Bootstrap `.compound-engineering/config.local.yaml` (offer to create from template, offer `.gitignore` entry)
   - Offer guided install for missing tools and skills (multiSelect, all pre-selected)
   - Run install commands one at a time, verifying each before continuing
@@ -49,7 +47,7 @@ Compound-engineering relies on multiple external CLIs and per-repo config that's
 
 ### 1. Single diagnostic pass
 
-The skill runs **one** check script that handles all CLI tools, agent skills, repo-local CE files, and `.gitignore` guidance. No manual per-tool checks, no repeated questioning. The output is a colored report ready to display to the user. If everything is installed, no repo-local cleanup needed, and the local config exists and is gitignored — the skill prints the success message and stops.
+The skill runs **one** check script that handles all CLI tools, agent skills, repo-local CE files, and `.gitignore` guidance. No manual per-tool checks, no repeated questioning. The output is a colored report ready to display to the user. If everything is installed and the local config exists and is gitignored — the skill prints the success message and stops.
 
 ### 2. Repo-local config bootstrapping
 
@@ -74,15 +72,11 @@ After running each install command, the skill verifies the tool actually install
 
 If verification succeeds, success is reported. If it fails, the project URL is displayed as fallback and the skill continues to the next dependency rather than blocking.
 
-### 5. Legacy `compound-engineering.local.md` cleanup
-
-The skill detects if the obsolete `compound-engineering.local.md` exists at the repo root. If so, it explains the file is obsolete (review-agent selection is now automatic, machine-local state moved to `.compound-engineering/config.local.yaml`) and asks whether to delete. The user controls the cleanup; the skill doesn't silently delete repo files.
-
-### 6. Pre-resolved plugin root for Claude Code detection
+### 5. Pre-resolved plugin root for Claude Code detection
 
 The skill uses pre-resolution (`!` backtick at skill load) to capture `${CLAUDE_PLUGIN_ROOT}`. If it resolves to an absolute path, this is Claude Code and the skill recommends `/ce-update` for upgrades. If it doesn't resolve (empty, literal token, or non-Claude harness), `/ce-update` references are omitted. No guessing at platform.
 
-### 7. Explicit-invocation only
+### 6. Explicit-invocation only
 
 `disable-model-invocation: true` prevents the skill from auto-firing on prose mentions of "setup" or installation discussion. Setup is a deliberate user choice — invoke `/ce-setup` directly.
 
@@ -172,7 +166,7 @@ The skill diagnoses, presents missing pieces with install commands, bootstraps c
 | Phase | Step |
 |-------|------|
 | 1. Diagnose | Determine plugin version, run health check script, evaluate results |
-| 2. Fix | Resolve repo-local issues (delete obsolete `compound-engineering.local.md`), bootstrap `.compound-engineering/config.local.yaml`, offer install for missing dependencies |
+| 2. Fix | Bootstrap `.compound-engineering/config.local.yaml`, offer install for missing dependencies |
 | Final | Summary report; recommend `/ce-update` if on Claude Code |
 
 Required tools list (defaults; varies by repo): `agent-browser`, `gh`, `jq`, `vhs`, `silicon`, `ffmpeg`, `ast-grep`. Required skills: `ast-grep` (when present in repo's needs).
@@ -180,9 +174,6 @@ Required tools list (defaults; varies by repo): `agent-browser`, `gh`, `jq`, `vh
 ---
 
 ## FAQ
-
-**What's `compound-engineering.local.md` and why is it being deleted?**
-The old machine-local config format, replaced by `.compound-engineering/config.local.yaml`. The skill detects the obsolete file, explains, and asks before deleting. Review-agent selection is now automatic via `ce-code-review`; manual selection in `compound-engineering.local.md` no longer applies.
 
 **Why is `.compound-engineering/config.local.yaml` gitignored?**
 Because it carries machine-local settings (tool preferences, pulse configuration, etc.) that shouldn't pollute teammates' setups. The committed `.compound-engineering/config.local.example.yaml` shows what's available; each user opts in locally.

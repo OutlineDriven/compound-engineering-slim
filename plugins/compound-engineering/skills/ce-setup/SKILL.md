@@ -10,7 +10,7 @@ disable-model-invocation: true
 
 Ask the user each question below using the platform's blocking question tool: `AskUserQuestion` in Claude Code (call `ToolSearch` with `select:AskUserQuestion` first if its schema isn't loaded), `request_user_input` in Codex, `ask_user` in Gemini, `ask_user` in Pi (requires the `pi-ask-user` extension). Fall back to presenting each question as a numbered list in chat only when no blocking tool exists in the harness or the call errors (e.g., Codex edit modes) — not because a schema load is required. Never silently skip or auto-configure. For multiSelect questions, accept comma-separated numbers (e.g. `1, 3`).
 
-Interactive setup for compound-engineering — diagnoses environment health, cleans obsolete repo-local CE config, and helps configure required tools. Review agent selection is handled automatically by `ce-code-review`; project-specific review guidance belongs in `CLAUDE.md` or `AGENTS.md`.
+Interactive setup for compound-engineering — diagnoses environment health and helps configure required tools. Review agent selection is handled automatically by `ce-code-review`; project-specific review guidance belongs in `CLAUDE.md` or `AGENTS.md`.
 
 ## Phase 1: Diagnose
 
@@ -50,11 +50,10 @@ After the diagnostic report, check whether:
 
 - any CLI tools are missing (reported as yellow in the Tools section)
 - any agent skills are missing (reported as yellow in the Skills section)
-- `compound-engineering.local.md` is present and needs cleanup
 - `.compound-engineering/config.local.yaml` does not exist or is not safely gitignored
 - `.compound-engineering/config.local.example.yaml` is missing or outdated
 
-If everything is installed, no repo-local cleanup is needed, and `.compound-engineering/config.local.yaml` already exists and is gitignored, display the tool and skill list and completion message. Parse the tool and skill names from the script output and list each with a green circle. Omit the Skills line if the Skills section is absent from the script output:
+If everything is installed and `.compound-engineering/config.local.yaml` already exists and is gitignored, display the tool and skill list and completion message. Parse the tool and skill names from the script output and list each with a green circle. Omit the Skills line if the Skills section is absent from the script output:
 
 ```
  ✅ Compound Engineering setup complete
@@ -70,15 +69,11 @@ If this is a Claude Code session (the **Plugin root** above resolved to a non-em
 
 Stop here.
 
-Otherwise proceed to Phase 2 to resolve any issues. Handle repo-local cleanup (Step 4) first, then config bootstrapping (Step 5), then missing dependencies (Step 6).
+Otherwise proceed to Phase 2 to resolve any issues. Handle config bootstrapping (Step 4) first, then missing dependencies (Step 5).
 
 ## Phase 2: Fix
 
-### Step 4: Resolve Repo-Local CE Issues
-
-Resolve the repository root (`git rev-parse --show-toplevel`). If `compound-engineering.local.md` exists at the repo root, explain that it is obsolete because review-agent selection is automatic and CE now uses `.compound-engineering/config.local.yaml` for any surviving machine-local state. Ask whether to delete it now. Use the repo-root path when deleting.
-
-### Step 5: Bootstrap Project Config
+### Step 4: Bootstrap Project Config
 
 Resolve the repository root (`git rev-parse --show-toplevel`). All paths below are relative to the repo root, not the current working directory.
 
@@ -103,7 +98,7 @@ If the user approves, copy `references/config-template.yaml` to `<repo-root>/.co
 
 If the local config already exists, check whether it is safely gitignored. If not, offer to add the `.gitignore` entry as above.
 
-### Step 6: Offer Installation
+### Step 5: Offer Installation
 
 Present the missing tools and skills using a multiSelect question with all items pre-selected. Use the install commands and URLs from the script's diagnostic output. Group items under `Tools:` and `Skills:` so the user can see which runtime each item targets; omit a group whose items are all installed.
 
@@ -126,7 +121,7 @@ Skills:
 
 Only show items that are actually missing. Omit installed ones.
 
-### Step 7: Install Selected Dependencies
+### Step 6: Install Selected Dependencies
 
 For each selected dependency, in order:
 
@@ -148,7 +143,7 @@ For each selected dependency, in order:
 
 4. **If verification fails or install errors:** Display the project URL as fallback and continue to the next dependency.
 
-### Step 8: Summary
+### Step 7: Summary
 
 Display a brief summary:
 

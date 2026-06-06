@@ -73,7 +73,7 @@ Synthesis owns the final route. Persona-provided routing metadata is input, not 
 | Mode | When | Behavior |
 |------|------|----------|
 | **Interactive** _(default)_ | Direct user invocation | Markdown report; the review applies the safe, verified fixes itself (Stage 5c → Applied section), pushes back on findings it disagrees with, and commits them as an isolated `fix(review):` commit when your tree was clean (or leaves them for your commit if it was dirty). Never pushes |
-| **`mode:agent`** | `mode:agent` (alias `mode:headless`) | One JSON object; report-only — the review mutates nothing and the caller (e.g. `/ce-work`) applies findings and owns the Residual Work Gate |
+| **`mode:agent`** | `mode:agent` | One JSON object; report-only — the review mutates nothing and the caller (e.g. `/ce-work`) applies findings and owns the Residual Work Gate |
 
 The skill never switches branches: a PR/branch argument selects review *scope* (diffed without checkout), not permission to mutate. Interactive apply edits the current checkout in place; to review the current checkout against another ref, pass `base:<ref>`.
 
@@ -100,7 +100,7 @@ When the diff has an associated plan (`docs/plans/*.md`), the skill discovers it
 
 ### 7. Residual Work Gate
 
-When autofix mode runs and the in-skill fixer can't resolve everything, the residual work doesn't just disappear into chat. The Residual Actionable Work summary lists each unresolved finding with stable numbering, severity, file:line, title, and autofix class. Callers (e.g., `/ce-work` Phase 3.4) read this summary and present user options: apply now, file tickets, accept with durable sink, or stop.
+When the in-skill fixer can't resolve everything, the residual work doesn't just disappear into chat. The Residual Actionable Work summary lists each unresolved finding with stable numbering, severity, file:line, title, and autofix class. Callers (e.g., `/ce-work` Phase 3.4) read this summary and present user options: apply now, file tickets, accept with durable sink, or stop.
 
 ### 8. Protected artifacts
 
@@ -176,7 +176,7 @@ Concurrent use note: `mode:agent` is report-only and never mutates, so it's safe
 | `<branch name>` | Reviews that branch without checking it out (remote/local ref diff) |
 | `base:<sha-or-ref>` | Skips scope detection; reviews current checkout against that ref |
 | `plan:<path>` | Loads the plan for requirements verification |
-| `mode:agent` | JSON machine handoff; report-only (the caller applies). `mode:headless` is a deprecated alias; `mode:report-only` is ignored |
+| `mode:agent` | JSON machine handoff; report-only (the caller applies) |
 
 Conflicting mode flags stop execution with an error. Combining `base:` with a PR/branch target also errors — pass one or the other.
 
@@ -191,7 +191,7 @@ Use it when it's the right tool — the quick-review short-circuit defers to it 
 Agent judgment over the actual diff — not keyword matching. The 4 always-on + 2 CE always-on personas run for every review. Cross-cutting and stack-specific personas are added when their concern is touched (e.g., security if auth files changed; `ce-data-migration-reviewer` when migration or schema dump files are present). Instruction-prose files skip runtime-focused reviewers (adversarial, races).
 
 **What's the difference between interactive (default) and `mode:agent`?**
-Interactive is the human-facing mode: a markdown report, and the review applies the safe, verified fixes itself (an Applied section) and commits them when your tree is clean (leaving them for your commit if it was dirty); it never pushes. `mode:agent` is the machine handoff: one JSON object, report-only — the review mutates nothing and the caller (e.g. `/ce-work`) applies findings on its own terms. `mode:headless` is a deprecated alias for `mode:agent`.
+Interactive is the human-facing mode: a markdown report, and the review applies the safe, verified fixes itself (an Applied section) and commits them when your tree is clean (leaving them for your commit if it was dirty); it never pushes. `mode:agent` is the machine handoff: one JSON object, report-only — the review mutates nothing and the caller (e.g. `/ce-work`) applies findings on its own terms.
 
 **What's the Residual Work Gate?**
 A caller-owned step (not part of the review skill): in `mode:agent`, the caller (typically `/ce-work`) applies what it can, then presents the findings it didn't apply and asks the user: apply now, file tickets, accept with durable sink, or stop. "Accept" requires a real durable record (Known Residuals in PR description, or `docs/residual-review-findings/<sha>.md`) — findings can't disappear into chat.

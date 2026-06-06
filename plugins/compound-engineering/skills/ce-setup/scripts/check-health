@@ -137,14 +137,11 @@ done
 #  Project checks (repo only)
 # =====================================================
 
-legacy_cfg="skip"
 repo_cfg_gitignore="skip"
 example_cfg="skip"
 
 if [ "$in_repo" = "yes" ]; then
   repo_root=$(git rev-parse --show-toplevel 2>/dev/null)
-  legacy_cfg="missing"
-  [ -f "$repo_root/compound-engineering.local.md" ] && legacy_cfg="present"
 
   if [ -e "$repo_root/.compound-engineering/config.local.yaml" ] || [ -d "$repo_root/.compound-engineering" ]; then
     if git check-ignore -q "$repo_root/.compound-engineering/config.local.yaml" 2>/dev/null; then
@@ -220,9 +217,6 @@ fi
 if [ "$in_repo" = "yes" ]; then
   has_project_issues="no"
 
-  if [ "$legacy_cfg" = "present" ]; then
-    has_project_issues="yes"
-  fi
   if [ "$repo_cfg_gitignore" = "missing" ]; then
     has_project_issues="yes"
   fi
@@ -232,11 +226,6 @@ if [ "$in_repo" = "yes" ]; then
 
   if [ "$has_project_issues" = "yes" ]; then
     section "Project"
-
-    if [ "$legacy_cfg" = "present" ]; then
-      warn "Outdated Compound Engineering config in this repo"
-      issues=$((issues + 1))
-    fi
 
     if [ "$repo_cfg_gitignore" = "missing" ]; then
       warn "Local config not safely gitignored"

@@ -1471,9 +1471,9 @@ describe("CLI", () => {
 
     expect(stdout).toContain("Converted compound-engineering")
     expect(stdout).toContain(codexRoot)
-    expect(await exists(path.join(codexRoot, "prompts", "workflows-review.md"))).toBe(true)
-    expect(await exists(path.join(codexRoot, "skills", "compound-engineering", "workflows-review", "SKILL.md"))).toBe(true)
-    expect(await exists(path.join(tempRoot, ".agents", "skills", "workflows-review"))).toBe(false)
+    expect(await exists(path.join(codexRoot, "prompts", "acme-review.md"))).toBe(true)
+    expect(await exists(path.join(codexRoot, "skills", "compound-engineering", "acme-review", "SKILL.md"))).toBe(true)
+    expect(await exists(path.join(tempRoot, ".agents", "skills", "acme-review"))).toBe(false)
     expect(await exists(path.join(codexRoot, "AGENTS.md"))).toBe(true)
   })
 
@@ -1514,10 +1514,10 @@ describe("CLI", () => {
 
     expect(stdout).toContain("Installed compound-engineering")
     expect(stdout).toContain(codexRoot)
-    expect(await exists(path.join(codexRoot, "prompts", "workflows-review.md"))).toBe(true)
-    expect(await exists(path.join(codexRoot, "skills", "compound-engineering", "workflows-review", "SKILL.md"))).toBe(true)
+    expect(await exists(path.join(codexRoot, "prompts", "acme-review.md"))).toBe(true)
+    expect(await exists(path.join(codexRoot, "skills", "compound-engineering", "acme-review", "SKILL.md"))).toBe(true)
     expect(await exists(path.join(codexRoot, "skills", "compound-engineering", "skill-one", "SKILL.md"))).toBe(true)
-    expect(await exists(path.join(tempRoot, ".agents", "skills", "workflows-review"))).toBe(false)
+    expect(await exists(path.join(tempRoot, ".agents", "skills", "acme-review"))).toBe(false)
     expect(await exists(path.join(tempRoot, ".agents", "skills", "skill-one"))).toBe(false)
     expect(await exists(path.join(codexRoot, "AGENTS.md"))).toBe(true)
   })
@@ -1807,7 +1807,7 @@ describe("CLI", () => {
 
     expect(stdout).toContain("Converted compound-engineering")
     expect(stdout).toContain(piRoot)
-    expect(await exists(path.join(piRoot, "prompts", "workflows-review.md"))).toBe(true)
+    expect(await exists(path.join(piRoot, "prompts", "acme-review.md"))).toBe(true)
     // Claude agents now install at .pi/agents/<name>.md (Pi agent format) so
     // nicobailon/pi-subagents can resolve them via the `subagent` tool.
     expect(await exists(path.join(piRoot, "agents", "repo-research-analyst.md"))).toBe(true)
@@ -1855,7 +1855,7 @@ describe("CLI", () => {
 
     expect(stdout).toContain("Installed compound-engineering")
     expect(stdout).toContain(piRoot)
-    expect(await exists(path.join(piRoot, "prompts", "workflows-review.md"))).toBe(true)
+    expect(await exists(path.join(piRoot, "prompts", "acme-review.md"))).toBe(true)
     expect(await exists(path.join(piRoot, "extensions", "compound-engineering-compat.ts"))).toBe(false)
   })
 
