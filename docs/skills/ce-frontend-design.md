@@ -243,4 +243,3 @@ Follow what exists; apply skill defaults only for areas where no convention was 
 
 - [`/ce-work`](./ce-work.md) — invokes this skill during frontend implementation
 - [`/ce-polish`](./ce-polish.md) — late-stage UX refinement after the feature is functional
-- [`/ce-demo-reel`](./ce-demo-reel.md) — captures visual evidence for PR descriptions

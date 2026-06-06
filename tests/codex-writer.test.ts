@@ -370,21 +370,15 @@ describe("writeCodexBundle", () => {
     __tempRoots.push(tempRoot)
     const codexRoot = path.join(tempRoot, ".codex")
 
-    // ce-demo-reel is the name of a current CE skill, but it has never been
-    // shipped as a flat ~/.codex/skills/ce-demo-reel/ install (the historical
-    // flat name was "demo-reel"). A user could plausibly have authored their
-    // own ce-demo-reel skill at the flat path. The first install of CE must
+    // ce-debug is the name of a current CE skill, but it has never been
+    // shipped as a flat ~/.codex/skills/ce-debug/ install and is not on the
+    // historical flat-path allow-list. A user could plausibly have authored
+    // their own ce-debug skill at the flat path. The first install of CE must
     // not move it to backup.
-    const userSkillDir = path.join(codexRoot, "skills", "ce-demo-reel")
-    await fs.mkdir(userSkillDir, { recursive: true })
-    const userSkillContent = "# user-authored skill, not from CE"
-    await fs.writeFile(path.join(userSkillDir, "SKILL.md"), userSkillContent)
-
-    // Same for ce-debug — current CE skill name, never in the historical
-    // flat-path allow-list, so a same-named user skill must be preserved.
     const userDebugDir = path.join(codexRoot, "skills", "ce-debug")
     await fs.mkdir(userDebugDir, { recursive: true })
-    await fs.writeFile(path.join(userDebugDir, "SKILL.md"), "# user debug skill")
+    const userSkillContent = "# user-authored skill, not from CE"
+    await fs.writeFile(path.join(userDebugDir, "SKILL.md"), userSkillContent)
 
     const plugin = await loadClaudePlugin(path.join(import.meta.dir, "..", "plugins", "compound-engineering"))
     const bundle = convertClaudeToCodex(plugin, {
@@ -394,12 +388,11 @@ describe("writeCodexBundle", () => {
     })
     await writeCodexBundle(codexRoot, bundle)
 
-    // The user skills survive the install — same path, same content.
-    expect(await exists(path.join(userSkillDir, "SKILL.md"))).toBe(true)
-    expect(await fs.readFile(path.join(userSkillDir, "SKILL.md"), "utf8")).toBe(userSkillContent)
+    // The user skill survives the install — same path, same content.
     expect(await exists(path.join(userDebugDir, "SKILL.md"))).toBe(true)
+    expect(await fs.readFile(path.join(userDebugDir, "SKILL.md"), "utf8")).toBe(userSkillContent)
 
-    // And they are not silently relocated to the legacy backup.
+    // And it is not silently relocated to the legacy backup.
     const backupRoot = path.join(codexRoot, "compound-engineering", "legacy-backup")
     if (await exists(backupRoot)) {
       const timestamps = await fs.readdir(backupRoot)
@@ -407,7 +400,6 @@ describe("writeCodexBundle", () => {
         const skillsBackup = path.join(backupRoot, ts, "skills")
         if (!(await exists(skillsBackup))) continue
         const backed = await fs.readdir(skillsBackup)
-        expect(backed).not.toContain("ce-demo-reel")
         expect(backed).not.toContain("ce-debug")
       }
     }

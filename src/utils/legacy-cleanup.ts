@@ -144,6 +144,10 @@ export const STALE_SKILL_DIRS = [
   // Removed end-to-end browser testing skill (slim/ultra-minimal). The renamed-era
   // "test-browser" entry above stays; this is the current-era dir name.
   "ce-test-browser",
+
+  // Removed visual evidence capture skill (slim/ultra-minimal). The renamed-era
+  // "demo-reel" entry (in plugin-legacy-artifacts) stays; this is the current-era dir name.
+  "ce-demo-reel",
 ]
 
 /** Old agent names (used as generated skill dirs or flat .md files). */
@@ -415,6 +419,10 @@ const LEGACY_ONLY_SKILL_DESCRIPTIONS: Record<string, string> = {
   // ce-test-browser was the end-to-end browser testing skill (removed, no replacement).
   "ce-test-browser":
     "Run browser tests on pages affected by current PR or branch",
+
+  // ce-demo-reel was the visual evidence capture skill (removed, no replacement).
+  "ce-demo-reel":
+    "Capture a visual demo reel (GIF, terminal recording, screenshots) for PR descriptions. Use when shipping UI changes, CLI features, or any work with observable behavior that benefits from visual proof. Also use when asked to add a demo, record a GIF, screenshot a feature, show what changed visually, create a demo reel, capture evidence, add proof to a PR, or create a before/after comparison.",
 }
 
 /**

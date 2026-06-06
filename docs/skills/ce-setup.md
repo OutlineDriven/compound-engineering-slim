@@ -195,4 +195,3 @@ Yes — the diagnostic and install flow work everywhere. The `/ce-update` recomm
 ## See Also
 
 - [`/ce-update`](./ce-update.md) — check plugin version and recommend update command (Claude Code only)
-- [`/ce-demo-reel`](./ce-demo-reel.md) — depends on `vhs` / `silicon` / `ffmpeg`, all installed by `ce-setup`
