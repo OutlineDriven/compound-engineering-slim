@@ -11,7 +11,7 @@ After installing, run `/ce-setup` in any project. It diagnoses your environment,
 | Component | Count |
 |-----------|-------|
 | Agents | 37 |
-| Skills | 21 |
+| Skills | 20 |
 
 ## Skills
 
@@ -50,7 +50,6 @@ The primary entry points for engineering work, invoked as slash commands. Detail
 | [`/ce-resolve-pr-feedback`](../../docs/skills/ce-resolve-pr-feedback.md) | Resolve PR review feedback in parallel |
 | [`/ce-setup`](../../docs/skills/ce-setup.md) | Diagnose environment, install missing tools, and bootstrap project config |
 | [`/ce-update`](../../docs/skills/ce-update.md) | Check compound-engineering plugin version and fix stale cache (Claude Code only) |
-| [`/ce-release-notes`](../../docs/skills/ce-release-notes.md) | Summarize recent compound-engineering plugin releases, or answer a question about a past release with a version citation |
 
 ### Development Frameworks
 

@@ -148,6 +148,11 @@ export const STALE_SKILL_DIRS = [
   // Removed visual evidence capture skill (slim/ultra-minimal). The renamed-era
   // "demo-reel" entry (in plugin-legacy-artifacts) stays; this is the current-era dir name.
   "ce-demo-reel",
+
+  // Removed plugin release-history skill (slim/ultra-minimal). The colon-era
+  // "ce:release-notes" entry (in plugin-legacy-artifacts) stays; this is the
+  // current-era dash dir name.
+  "ce-release-notes",
 ]
 
 /** Old agent names (used as generated skill dirs or flat .md files). */
@@ -423,6 +428,14 @@ const LEGACY_ONLY_SKILL_DESCRIPTIONS: Record<string, string> = {
   // ce-demo-reel was the visual evidence capture skill (removed, no replacement).
   "ce-demo-reel":
     "Capture a visual demo reel (GIF, terminal recording, screenshots) for PR descriptions. Use when shipping UI changes, CLI features, or any work with observable behavior that benefits from visual proof. Also use when asked to add a demo, record a GIF, screenshot a feature, show what changed visually, create a demo reel, capture evidence, add proof to a PR, or create a before/after comparison.",
+
+  // ce-release-notes was the plugin release-history skill (removed, no replacement).
+  // Provide descriptions for both the ce: and ce- naming eras so cleanup can
+  // fingerprint installs from either era after the skill dir is gone.
+  "ce-release-notes":
+    "Summarize recent compound-engineering plugin releases, or answer a specific question about a past release with a version citation. Use when the user types `/ce-release-notes` or asks \"what changed in compound-engineering recently?\" or \"what happened to `<skill-name>`?\".",
+  "ce:release-notes":
+    "Summarize recent compound-engineering plugin releases, or answer a specific question about a past release with a version citation. Use when the user types `/ce-release-notes` or asks \"what changed in compound-engineering recently?\" or \"what happened to `<skill-name>`?\".",
 }
 
 /**

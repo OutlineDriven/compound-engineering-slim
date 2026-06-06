@@ -184,4 +184,3 @@ The skill recognizes the case (`__CE_UPDATE_NOT_MARKETPLACE__` from the path-par
 ## See Also
 
 - [`ce-setup`](./ce-setup.md) — installs missing dependencies; complementary to version checks
-- [`ce-release-notes`](./ce-release-notes.md) — summarize recent compound-engineering plugin releases
