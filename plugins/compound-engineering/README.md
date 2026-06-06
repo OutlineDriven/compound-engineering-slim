@@ -11,7 +11,7 @@ After installing, run `/ce-setup` in any project. It diagnoses your environment,
 | Component | Count |
 |-----------|-------|
 | Agents | 37 |
-| Skills | 27 |
+| Skills | 26 |
 
 ## Skills
 
@@ -43,7 +43,6 @@ The primary entry points for engineering work, invoked as slash commands. Detail
 
 | Skill | Description |
 |-------|-------------|
-| [`/ce-clean-gone-branches`](../../docs/skills/ce-clean-gone-branches.md) | Clean up local branches whose remote tracking branch is gone |
 | [`/ce-commit-push-pr`](../../docs/skills/ce-commit-push-pr.md) | Commit, push, and open a PR with an adaptive description; also update an existing PR description, or generate a description on its own without committing; or commit only without pushing |
 | [`/ce-worktree`](../../docs/skills/ce-worktree.md) | Manage Git worktrees for parallel development |
 

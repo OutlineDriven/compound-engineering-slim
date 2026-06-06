@@ -27,6 +27,7 @@ const EXTRA_LEGACY_ARTIFACTS_BY_PLUGIN: Record<string, LegacyPluginArtifacts> = 
       "brainstorming",
       "ce-andrew-kane-gem-writer",
       "ce-changelog",
+      "ce-clean-gone-branches",
       "ce-deploy-docs",
       "ce-dspy-ruby",
       "ce-every-style-editor",
