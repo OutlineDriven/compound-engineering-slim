@@ -50,7 +50,7 @@ Status: ✅ Done = tool exists and documented; ⚠️ Missing = no agent equival
 
 Before merging any PR that adds UI functionality:
 
-```
+```text
 1. What action is this?
    → "User can publish an insight to their reading feed"
 
@@ -83,7 +83,7 @@ PR template addition:
 
 Periodically walk every screen and list what users can do, then verify tool coverage:
 
-```
+```text
 ✅ View list of books      → read_library
 ✅ Search books            → read_library (with query param)
 ⚠️ Filter by category     → MISSING (add filter param to read_library)
