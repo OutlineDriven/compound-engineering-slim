@@ -6,8 +6,6 @@ argument-hint: "[Plan doc path or description of work. Blank to auto use latest 
 
 # Work Execution Command
 
-Execute work efficiently while maintaining quality and finishing features.
-
 ## Introduction
 
 This command takes a work document (plan or specification) or a bare prompt describing the work, and executes it systematically. The focus is on **shipping complete features** by understanding requirements quickly, following existing patterns, and maintaining quality throughout.
