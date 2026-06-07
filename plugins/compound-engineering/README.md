@@ -11,7 +11,7 @@ After installing, run `/ce-setup` in any project. It diagnoses your environment,
 | Component | Count |
 |-----------|-------|
 | Agents | 16 |
-| Skills | 15 |
+| Skills | 16 |
 
 ## Skills
 
@@ -61,6 +61,7 @@ The primary entry points for engineering work, invoked as slash commands. Detail
 |-------|-------------|
 | [`/ce-doc-review`](../../docs/skills/ce-doc-review.md) | Review documents using parallel persona agents for role-specific feedback |
 | [`/ce-simplify-code`](../../docs/skills/ce-simplify-code.md) | Simplify recent code changes for reuse, quality, and efficiency — parallel reviewers find issues, fixes applied, behavior verified by tests |
+| `/ce-verify-before-complete` | Verification gate before claiming work complete — runs the repo-native verifier, reads back changed files, ghost-checks removed names, and diffs delivery against the original request |
 
 ## Agents
 
