@@ -6,7 +6,7 @@ argument-hint: "[mode:headless] [path/to/document.md]"
 
 # Document Review
 
-Review requirements or plan documents through multi-persona analysis. Dispatches specialized reviewer agents in parallel, auto-applies `safe_auto` fixes, and routes remaining findings through a four-option interaction (per-finding walk-through, auto-resolve with best judgment, Append-to-Open-Questions, Report-only) for user decision.
+Review requirements or plan documents through multi-persona analysis. Dispatch specialized reviewer agents in parallel, auto-apply `safe_auto` fixes, and route remaining findings through a four-option interaction (per-finding walk-through, auto-resolve with best judgment, Append-to-Open-Questions, Report-only) for user decision.
 
 ## Interactive mode rules
 
@@ -19,7 +19,7 @@ Check the skill arguments for `mode:headless`. Arguments may contain a document 
 
 If `mode:headless` is present, set **headless mode** for the rest of the workflow.
 
-**Headless mode** changes the interaction model, not the classification boundaries. ce-doc-review still applies the same judgment about which tier each finding belongs in:
+**Headless mode** changes the interaction model, not the classification boundaries. ce-doc-review applies the same tier judgment per finding:
 
 - `safe_auto` fixes are applied silently (same as interactive)
 - `gated_auto`, `manual`, and FYI findings are returned as structured text for the caller to handle — no blocking-question prompts, no interactive routing
@@ -35,9 +35,9 @@ If `mode:headless` is present, set **headless mode** for the rest of the workflo
 
 ### Classify Document Type
 
-Classify the document by reading its **content shape**, not its file path. Path is a tie-breaker hint, not the primary signal — a brainstorm-style doc placed under `docs/plans/` should still classify as `requirements`, and a plan-shaped doc under `docs/brainstorms/` should still classify as `plan`.
+Classify the document by its **content shape**, not its file path. Path is a tie-breaker hint, not the primary signal: a brainstorm-style doc under `docs/plans/` still classifies as `requirements`, and a plan-shaped doc under `docs/brainstorms/` still classifies as `plan`.
 
-Use these signals to decide:
+Signals:
 
 **`requirements` signals (what-to-build documents):**
 - Frontmatter fields like `actors:`, `flows:`, `acceptance_examples:`, or `status:` carrying brainstorm-shaped values
@@ -54,15 +54,15 @@ Use these signals to decide:
 - Repo-relative file paths to create/modify/test
 - Prose framing focused on technical decisions, sequencing, and implementer-facing detail
 
-**Tie-breaker rule.** When the content signals are mixed or sparse, fall back to path: `docs/brainstorms/` → `requirements`, `docs/plans/` → `plan`. When neither path location applies, treat the dominant content shape as authoritative; if shape is genuinely ambiguous, default to `requirements` (the more conservative classification — it activates fewer plan-specific feasibility checks).
+**Tie-breaker rule.** When signals are mixed or sparse, fall back to path: `docs/brainstorms/` → `requirements`, `docs/plans/` → `plan`. When neither path applies, treat the dominant content shape as authoritative; if shape is genuinely ambiguous, default to `requirements` (the conservative choice — it activates fewer plan-specific feasibility checks).
 
-Pass the classification result to each persona via the `{document_type}` slot in the subagent template. Personas read this and adapt their analysis accordingly.
+Pass the classification to each persona via the `{document_type}` slot in the subagent template. Personas adapt their analysis accordingly.
 
 ### Select Conditional Personas
 
 `ce-coherence-reviewer` and `ce-feasibility-reviewer` are always-on. `ce-feasibility-reviewer` carries the design-completeness and security-surface lenses interior to its review and scopes them by document type, so design (UI/UX, frontend components, user flows, interaction states, responsive/accessibility) and security (auth/authz, public API endpoints, data handling, PII, payments, credentials, third-party trust boundaries) content needs no separate activation — note it in the announce justification when present so the user sees why those lenses fired.
 
-The one conditional persona is `ce-adversarial-document-reviewer`. Analyze the document content and activate it when the document presents a high-value challenge surface, not merely structural complexity. Routine plans with stated rationale are not by themselves an adversarial signal — premise/assumption work re-litigates settled questions when the only signal is "this plan is well-structured." Activate when ANY of the following holds:
+The one conditional persona is `ce-adversarial-document-reviewer`. Activate it when the document presents a high-value challenge surface, not merely structural complexity. Routine plans with stated rationale are not an adversarial signal on their own — premise/assumption work re-litigates settled questions when the only signal is "this plan is well-structured." Activate when ANY of the following holds:
 
 - The document is a **requirements document** with 2+ challengeable claims (problem framing, solution selection, prioritization, predicted outcomes) -- premise scrutiny is core to the brainstorm phase
 - The document touches a **high-stakes domain** -- auth, payments, billing, data migrations, privacy/compliance, external integrations, cryptography -- regardless of doc type or size
@@ -100,7 +100,7 @@ Add when its activation triggers fire (see Select Conditional Personas):
 
 ### Dispatch
 
-Dispatch agents using **bounded parallelism** with the platform's subagent primitive (e.g., `Agent` in Claude Code, `spawn_agent` in Codex, `subagent` in Pi via the `pi-subagents` extension). Omit the `mode` parameter so the user's configured permission settings apply. Respect the current harness's active-subagent limit: queue selected reviewers, dispatch only as many as the harness accepts, and fill freed slots as reviewers complete. Treat active-agent/thread/concurrency-limit spawn errors as backpressure, not reviewer failure: leave the reviewer queued and retry after a slot frees. Record a reviewer as failed only after a successful dispatch times out/fails, or when dispatch fails for a non-capacity reason.
+Dispatch agents using **bounded parallelism** with the platform's subagent primitive (e.g., `Agent` in Claude Code, `spawn_agent` in Codex, `subagent` in Pi via the `pi-subagents` extension). Omit the `mode` parameter so the user's configured permission settings apply. Respect the current harness's active-subagent limit: queue selected reviewers, dispatch only as many as the harness accepts, and fill freed slots as reviewers complete. Treat active-agent/thread/concurrency-limit spawn errors as backpressure, not reviewer failure — leave the reviewer queued and retry after a slot frees. Record a reviewer as failed only after a successful dispatch times out/fails, or when dispatch fails for a non-capacity reason.
 
 Each agent receives the prompt built from the subagent template included below with these variables filled:
 
@@ -147,13 +147,13 @@ Round 2 — applied (N entries):
 </prior-decisions>
 ```
 
-Each entry carries an `Evidence:` line for synthesis R29/R30 overlap matching. The `{evidence_snippet}` is the first evidence quote from the finding, truncated to ~120 characters (preserving whole words at the boundary) with internal quotes escaped. If a finding has multiple evidence entries, use the first one.
+Each entry carries an `Evidence:` line for synthesis R29/R30 overlap matching. `{evidence_snippet}` is the finding's first evidence quote, truncated to ~120 characters (whole words at the boundary) with internal quotes escaped. Use the first when a finding has multiple evidence entries.
 
-Accumulate across all rounds in the current session. Skip, Defer, and Acknowledge actions all count as "rejected" for suppression purposes — each signals the user decided the finding wasn't worth actioning this round (Acknowledge is the no-fix-guard variant: the user saw a finding with no `suggested_fix`, chose not to defer or skip explicitly, and recorded acknowledgement instead; for round-to-round suppression that is semantically equivalent to Skip). Applied findings stay on the applied list so round-N+1 personas can verify fixes landed (see R30 in `references/synthesis-and-presentation.md`).
+Accumulate across all rounds in the current session. Skip, Defer, and Acknowledge all count as "rejected" for suppression — each signals the user decided the finding wasn't worth actioning this round (Acknowledge is the no-fix-guard variant: the user saw a finding with no `suggested_fix`, chose not to defer or skip explicitly, and recorded acknowledgement instead; for round-to-round suppression this is equivalent to Skip). Applied findings stay on the applied list so round-N+1 personas can verify fixes landed (see R30 in `references/synthesis-and-presentation.md`).
 
-Cross-session persistence is out of scope. A new invocation of ce-doc-review on the same document starts with a fresh round 1 and no carried primer, even if prior sessions deferred findings into the document's Open Questions section.
+Cross-session persistence is out of scope. A new invocation of ce-doc-review on the same document starts at a fresh round 1 with no carried primer, even if prior sessions deferred findings into the document's Open Questions section.
 
-**Error handling:** If an agent fails or times out, proceed with findings from agents that completed. Note the failed agent in the Coverage section. Do not block the entire review on a single agent failure.
+**Error handling:** If an agent fails or times out, proceed with findings from agents that completed and note the failed agent in the Coverage section. Do not block the entire review on a single agent failure.
 
 If the harness cap is lower than the selected team size, queue the remainder and launch them as active reviewers complete.
 
@@ -161,7 +161,7 @@ If the harness cap is lower than the selected team size, queue the remainder and
 
 After all dispatched agents return, read `references/synthesis-and-presentation.md` for the synthesis pipeline (validate, anchor-based gate, dedup, cross-persona agreement promotion, resolve contradictions, auto-promotion, route by three tiers with FYI subsection), `safe_auto` fix application, headless-envelope output, and the handoff to the routing question.
 
-For the four-option routing question and per-finding walk-through (interactive mode), read `references/walkthrough.md`. For the bulk-action preview used by best-judgment routing, Append-to-Open-Questions, and walk-through `Auto-resolve with best judgment on the rest`, read `references/bulk-preview.md`. Do not load these files before agent dispatch completes.
+For the four-option routing question and per-finding walk-through (interactive mode), read `references/walkthrough.md`. For the bulk-action preview used by best-judgment routing, Append-to-Open-Questions, and walk-through `Auto-resolve with best judgment on the rest`, read `references/bulk-preview.md`. Do not load these before agent dispatch completes.
 
 ---
 
