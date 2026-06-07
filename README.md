@@ -35,7 +35,6 @@ This is a deliberately slimmed fork of [EveryInc/compound-engineering-plugin](ht
 | skills | 16 | 39 |
 | agents | 16 | 43 |
 | converter targets | 5 (opencode, codex, pi, gemini, kiro) | more (copilot and droid dropped here) |
-| bundled plugins | 1 | 2 (coding-tutor removed here) |
 
 - Removals are tracked in three legacy-cleanup registries so upgrades sweep stale artifacts off users' machines.
 - The same brainstorm -> plan -> work -> review -> compound core workflow is preserved.
