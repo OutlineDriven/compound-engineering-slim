@@ -37,8 +37,6 @@ This is a deliberately slimmed fork of [EveryInc/compound-engineering-plugin](ht
 | converter targets | 5 (opencode, codex, pi, gemini, kiro) | more (copilot and droid dropped here) |
 | bundled plugins | 1 | 2 (coding-tutor removed here) |
 
-- 38 skills were removed during slimming.
-- 92+ agent personas were consolidated into fewer focused reviewers.
 - Removals are tracked in three legacy-cleanup registries so upgrades sweep stale artifacts off users' machines.
 - The same brainstorm -> plan -> work -> review -> compound core workflow is preserved.
 
