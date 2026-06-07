@@ -1,4 +1,4 @@
-# Compound Engineering Slim Variant
+# Compound Engineering Slimmed Down Edition
 
 [![Build Status](https://github.com/OutlineDriven/compound-engineering-slim/actions/workflows/ci.yml/badge.svg)](https://github.com/OutlineDriven/compound-engineering-slim/actions/workflows/ci.yml)
 [![GitHub release](https://img.shields.io/github/v/release/OutlineDriven/compound-engineering-slim)](https://github.com/OutlineDriven/compound-engineering-slim/releases)
