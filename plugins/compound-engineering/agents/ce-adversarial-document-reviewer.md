@@ -16,24 +16,19 @@ Read two slots in your prompt's `<review-context>` block:
 - `Document type:` — the orchestrator's authoritative classification (`requirements` or `plan`). Trust it; do not re-classify.
 - `Origin:` — the document's `origin:` frontmatter value, or the literal token `none` when no origin was declared. Read this slot directly; do not parse the document's frontmatter yourself.
 
-Run the full protocol only when adversarial scrutiny is genuinely useful for that doc shape — when premise has already been settled upstream, several techniques re-litigate decided questions and produce noisy "the motivation is thin" findings on plans whose motivation lives in the linked brainstorm. Calibrate by combining the two slots:
+Run the full protocol only when adversarial scrutiny is genuinely useful for that doc shape — when premise has already been settled upstream, several techniques re-litigate decided questions and produce noisy "the motivation is thin" findings on plans whose motivation lives in the linked brainstorm. Two slot combinations select the protocol:
 
-**`Document type: requirements`:** primary home. Run the full protocol per Depth calibration below. Premise, assumptions, strategic consequences, and scope-goal alignment ARE the brainstorm's domain.
+- **`Document type: requirements` (any origin), OR `Document type: plan` AND `Origin: none`** (greenfield bootstrap) — premise has not been validated upstream. Run the full protocol per Depth calibration below. Premise, assumptions, strategic consequences, and scope-goal alignment ARE the brainstorm's domain.
+- **`Document type: plan` AND `Origin:` is a path (not `none`)** — premise has already been validated upstream. Run only the restricted set below; suppress Section 1 (Premise challenging) and Section 4 (Simplification pressure) entirely, and do not emit findings of any suppressed type even if you notice candidates.
 
-**`Document type: plan` AND `Origin:` is a path (not `none`):** premise has already been validated upstream. Run only:
+Restricted set for `plan` + `Origin:` path:
 - Section 2 (Assumption surfacing) — restricted to *technical* assumptions in the plan: environmental, scale, temporal, library/framework. Suppress assumptions about user behavior or product framing — those belong to the origin doc.
 - Section 2b (Strategic consequences) — only when the plan introduces *new* strategic weight beyond the origin scope (new positioning bet, new identity-affecting choice, new path dependency the origin didn't sign off on).
 - Section 3 (Decision stress-testing) — focus on the plan's Key Technical Decisions and architectural choices. Suppress stress-testing of product-level decisions that the origin doc settled.
 - Section 4b (Scope and complexity) — implementation-time abstractions (does each new abstraction proposed in the plan have multiple current consumers?), implementation complexity bloat (file count, new utility/helper modules, new framework adoption the origin didn't ask for), priority dependency among implementation units, and scope-creep into deferred work. Suppress orphan-requirement and unserved-goal critiques against the origin's own goals — those belong upstream.
 - Section 5 (Alternative blindness) — only for *architectural* alternatives the plan didn't consider (different sequencing, different integration boundary, different rollout). Suppress product-shape alternatives — those belong upstream.
 
-**Suppress entirely** when `Document type: plan` AND `Origin:` is set:
-- Section 1 (Premise challenging) — origin already validated the problem framing and goals. Re-raising "is this the real problem?" on the HOW document is the noise pattern users complain about.
-- Section 4 (Simplification pressure) — the scope and complexity lens (4b) covers this for plans; running the full premise-level simplification pass here produces redundant findings.
-
-**`Document type: plan` AND `Origin: none`** (greenfield bootstrap) — premise wasn't validated upstream. Run the full protocol per Depth calibration below.
-
-When suppressing techniques due to origin, do not emit findings of those types even if you notice candidates.
+Why suppress 1 and 4 on `plan` + origin: origin already validated the problem framing and goals, so re-raising "is this the real problem?" on the HOW document is the noise pattern users complain about; and the scope and complexity lens (4b) already covers simplification for plans, so the full premise-level simplification pass produces redundant findings.
 
 ## Depth calibration
 
