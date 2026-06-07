@@ -2,9 +2,49 @@
 
 AI-powered development tools that get smarter with every use. Make each unit of engineering work easier than the last.
 
-## Getting Started
+## Quickstart
 
-After installing, run `/ce-setup` in any project. It diagnoses your environment, installs missing tools, and bootstraps project config in one interactive flow.
+First specialist review of your own diff in about 5 minutes.
+
+Prerequisites:
+
+- Claude Code installed.
+- A git repo with some uncommitted or recent changes.
+
+### Step 1: Install
+
+```text
+/plugin marketplace add OutlineDriven/compound-engineering-slim
+/plugin install compound-engineering
+```
+
+### Step 2: Setup
+
+Run `/ce-setup` once in your project. It diagnoses your environment, installs missing tools, and bootstraps project config in one interactive flow.
+
+```text
+/ce-setup
+```
+
+### Step 3: First value
+
+On a branch with changes, run `/ce-code-review`:
+
+```text
+/ce-code-review
+```
+
+Specialist reviewer agents run over your diff and report findings grouped by area (correctness, security, performance, testing). For a feature idea instead of a diff, run `/ce-plan` and the same kind of specialist agents produce a structured plan.
+
+### What you just used
+
+Skills are the slash-command entry points that orchestrate the work; agents are the focused subagents that do the review and research a skill dispatches. The plugin ships 16 skills and 16 agents total.
+
+Next steps:
+
+- [Full skill inventory](#skills) below in this README.
+- [Per-skill docs](../../docs/skills/) for purpose, mechanics, and use cases.
+- [Other-platform installs](../../README.md#install) in the root README.
 
 ## Components
 

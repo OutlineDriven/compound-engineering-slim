@@ -1,0 +1,24 @@
+# Compound Engineering (slim fork)
+
+> A coding-agent plugin for Claude Code that runs a compounding development loop: brainstorm, plan, work, review, compound. This is the deliberately slimmed fork of EveryInc/compound-engineering-plugin, shipping 16 skills and 16 agents versus upstream's 39 skills and 43 agents (both at v3.11.2 as of June 2026). Efficiency here means surface area only: fewer components mean a smaller install and prompt surface, not any runtime speed or memory claim.
+
+Install for Claude Code by adding the marketplace and the plugin: `/plugin marketplace add OutlineDriven/compound-engineering-slim` then `/plugin install compound-engineering`. To convert to other agent platforms, use the bundled CLI: `bunx github:OutlineDriven/compound-engineering-slim install compound-engineering --to <target>` (targets: opencode, codex, pi, gemini, kiro). The core loop is brainstorm -> plan -> work -> review -> compound, with each stage backed by a dedicated skill and reviewer agents.
+
+## Docs
+
+- [README.md](README.md): repo overview and usage
+- [plugins/compound-engineering/README.md](plugins/compound-engineering/README.md): plugin behavior and inventory
+- [docs/skills/README.md](docs/skills/README.md): per-skill documentation index
+- [CONCEPTS.md](CONCEPTS.md): shared domain vocabulary
+- [AGENTS.md](AGENTS.md): canonical repo instructions for agents
+
+## Inventory
+
+Skills (16): ce-brainstorm, ce-code-review, ce-commit-push-pr, ce-compound, ce-debug, ce-doc-review, ce-frontend-design, ce-plan, ce-sessions, ce-setup, ce-simplify-code, ce-subagent-driven, ce-update, ce-verify-before-complete, ce-work, ce-worktree
+
+Agents (16): ce-adversarial-document-reviewer, ce-adversarial-reviewer, ce-architecture-strategist, ce-best-practices-researcher, ce-coherence-reviewer, ce-correctness-reviewer, ce-feasibility-reviewer, ce-learnings-researcher, ce-performance-reviewer, ce-plan-specialist-reviewer, ce-previous-comments-reviewer, ce-repo-research-analyst, ce-security-reviewer, ce-session-historian, ce-testing-reviewer, ce-web-researcher
+
+## Optional
+
+- [docs/seo-geo-loop.md](docs/seo-geo-loop.md): SEO/GEO maintenance loop notes
+- [docs/solutions/](docs/solutions/): documented solutions to past problems, by category

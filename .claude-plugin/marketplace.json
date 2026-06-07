@@ -17,15 +17,20 @@
         "url": "https://github.com/kieranklaassen",
         "email": "kieran@every.to"
       },
-      "homepage": "https://github.com/EveryInc/compound-engineering-plugin",
+      "homepage": "https://github.com/OutlineDriven/compound-engineering-slim",
       "tags": [
         "ai-powered",
         "compound-engineering",
         "workflow-automation",
         "code-review",
         "quality",
+        "planning",
+        "debugging",
         "knowledge-management",
-        "image-generation"
+        "ai-agents",
+        "developer-tools",
+        "claude-code",
+        "codex"
       ],
       "source": "./plugins/compound-engineering"
     }

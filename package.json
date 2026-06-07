@@ -1,14 +1,14 @@
 {
   "name": "@every-env/compound-plugin",
   "version": "3.11.2",
-  "description": "Official Compound Engineering plugin for Claude Code, Codex, and more",
+  "description": "Slim fork of the Compound Engineering plugin for Claude Code, Codex, and more",
   "type": "module",
   "private": false,
   "bin": {
     "compound-plugin": "src/index.ts"
   },
-  "homepage": "https://github.com/EveryInc/compound-engineering-plugin",
-  "repository": "https://github.com/EveryInc/compound-engineering-plugin",
+  "homepage": "https://github.com/OutlineDriven/compound-engineering-slim",
+  "repository": "https://github.com/OutlineDriven/compound-engineering-slim",
   "publishConfig": {
     "access": "public"
   },

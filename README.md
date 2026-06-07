@@ -1,7 +1,7 @@
 # Compound Engineering
 
 [![Build Status](https://github.com/OutlineDriven/compound-engineering-slim/actions/workflows/ci.yml/badge.svg)](https://github.com/OutlineDriven/compound-engineering-slim/actions/workflows/ci.yml)
-[![npm](https://img.shields.io/npm/v/@every-env/compound-plugin)](https://www.npmjs.com/package/@every-env/compound-plugin)
+[![GitHub release](https://img.shields.io/github/v/release/OutlineDriven/compound-engineering-slim)](https://github.com/OutlineDriven/compound-engineering-slim/releases)
 
 AI skills and agents that make each unit of engineering work easier than the last.
 
@@ -25,6 +25,22 @@ The point is not ceremony. The point is leverage. A good brainstorm makes the pl
 - [Full component reference](plugins/compound-engineering/README.md) - all agents and skills
 - [Compound engineering: how Every codes with agents](https://every.to/chain-of-thought/compound-engineering-how-every-codes-with-agents)
 - [The story behind compounding engineering](https://every.to/source-code/my-ai-had-already-fixed-the-code-before-i-saw-it)
+
+## Why this fork
+
+This is a deliberately slimmed fork of [EveryInc/compound-engineering-plugin](https://github.com/EveryInc/compound-engineering-plugin). What makes it distinct is that removals here are intentional, registered, and swept on upgrade: deleted skills, agents, and commands are recorded in three legacy-cleanup registries (across `src/utils/legacy-cleanup.ts` and `src/data/plugin-legacy-artifacts.ts`) so stale flat-install artifacts get removed when users upgrade. It is efficient strictly in the surface-area sense -- fewer components mean a smaller install and a smaller prompt surface -- while keeping the same core workflow.
+
+| | this fork | upstream (as of June 2026) |
+|---|---|---|
+| skills | 16 | 39 |
+| agents | 16 | 43 |
+| converter targets | 5 (opencode, codex, pi, gemini, kiro) | more (copilot and droid dropped here) |
+| bundled plugins | 1 | 2 (coding-tutor removed here) |
+
+- Removals are tracked in three legacy-cleanup registries so upgrades sweep stale artifacts off users' machines.
+- The same brainstorm -> plan -> work -> review -> compound core workflow is preserved.
+
+**How is this different from upstream compound-engineering?** This is a slimmed fork of EveryInc/compound-engineering-plugin. As of June 2026, it ships 16 skills and 16 agents versus upstream's 39 skills and 43 agents, and 5 converter targets (opencode, codex, pi, gemini, kiro) versus upstream's larger set. The core brainstorm -> plan -> work -> review -> compound workflow is unchanged; removals are registered and swept on upgrade rather than left as orphans.
 
 ## Workflow
 
@@ -65,7 +81,7 @@ For a focused bug investigation:
 
 After installing, run `/ce-setup` in any project. It checks your environment, installs missing tools, and bootstraps project config.
 
-The `compound-engineering` plugin ships 14 skills and 16 agents. See the [full component reference](plugins/compound-engineering/README.md) for the complete inventory.
+The `compound-engineering` plugin ships 16 skills and 16 agents. See the [full component reference](plugins/compound-engineering/README.md) for the complete inventory.
 
 ---
 
@@ -101,7 +117,7 @@ Three steps: register the marketplace, install the agent set, then install the p
 2. **Install the Compound Engineering agents** (Codex's plugin spec does not register custom agents yet):
 
    ```bash
-   bunx @every-env/compound-plugin install compound-engineering --to codex
+   bunx github:OutlineDriven/compound-engineering-slim install compound-engineering --to codex
    ```
 
 3. **Install the plugin through Codex's TUI:** launch `codex`, run `/plugins`, find the **Compound Engineering** marketplace, select the **compound-engineering** plugin, and choose **Install**. Restart Codex after install completes. Codex's CLI can register marketplaces, but it does not currently expose a plugin-install subcommand for plugins from an added marketplace -- the `/plugins` TUI install is required for CE skills.
@@ -112,7 +128,7 @@ For a non-default Codex profile, run every Codex-related step against the same `
 
 ```bash
 CODEX_HOME="$HOME/.codex/profiles/work" codex plugin marketplace add OutlineDriven/compound-engineering-slim
-CODEX_HOME="$HOME/.codex/profiles/work" bunx @every-env/compound-plugin install compound-engineering --to codex
+CODEX_HOME="$HOME/.codex/profiles/work" bunx github:OutlineDriven/compound-engineering-slim install compound-engineering --to codex
 CODEX_HOME="$HOME/.codex/profiles/work" codex
 ```
 
@@ -131,7 +147,7 @@ CODEX_HOME="$HOME/.codex/profiles/work" codex
 If you previously used the Bun-only Codex install, back up stale CE artifacts before switching:
 
 ```bash
-bunx @every-env/compound-plugin cleanup --target codex
+bunx github:OutlineDriven/compound-engineering-slim cleanup --target codex
 ```
 
 ### Qwen Code
@@ -145,7 +161,7 @@ Qwen Code installs Claude Code-compatible plugins directly from GitHub and conve
 If you previously used the old Bun Qwen install, back up stale CE artifacts before switching to the native extension:
 
 ```bash
-bunx @every-env/compound-plugin cleanup --target qwen
+bunx github:OutlineDriven/compound-engineering-slim cleanup --target qwen
 ```
 
 ### OpenCode, Pi, Gemini, and Kiro
@@ -153,10 +169,10 @@ bunx @every-env/compound-plugin cleanup --target qwen
 This repo includes a Bun/TypeScript installer that converts the Compound Engineering plugin to OpenCode, Pi, Gemini CLI, and Kiro CLI.
 
 ```bash
-bunx @every-env/compound-plugin install compound-engineering --to opencode
-bunx @every-env/compound-plugin install compound-engineering --to pi
-bunx @every-env/compound-plugin install compound-engineering --to gemini
-bunx @every-env/compound-plugin install compound-engineering --to kiro
+bunx github:OutlineDriven/compound-engineering-slim install compound-engineering --to opencode
+bunx github:OutlineDriven/compound-engineering-slim install compound-engineering --to pi
+bunx github:OutlineDriven/compound-engineering-slim install compound-engineering --to gemini
+bunx github:OutlineDriven/compound-engineering-slim install compound-engineering --to kiro
 ```
 
 **Pi prerequisites.** Pi does not ship a native subagent primitive, so the Pi install depends on [nicobailon/pi-subagents](https://github.com/nicobailon/pi-subagents) (required) and recommends [edlsh/pi-ask-user](https://github.com/edlsh/pi-ask-user) for richer blocking user questions:
@@ -169,19 +185,19 @@ pi install npm:pi-ask-user     # recommended — provides the `ask_user` tool; s
 To auto-detect custom-install targets and install to all:
 
 ```bash
-bunx @every-env/compound-plugin install compound-engineering --to all
+bunx github:OutlineDriven/compound-engineering-slim install compound-engineering --to all
 ```
 
 The custom install targets run CE legacy cleanup during install. To run cleanup manually for a specific target:
 
 ```bash
-bunx @every-env/compound-plugin cleanup --target codex
-bunx @every-env/compound-plugin cleanup --target opencode
-bunx @every-env/compound-plugin cleanup --target pi
-bunx @every-env/compound-plugin cleanup --target gemini
-bunx @every-env/compound-plugin cleanup --target kiro
-bunx @every-env/compound-plugin cleanup --target qwen      # old Bun installs only
-bunx @every-env/compound-plugin cleanup --target windsurf  # deprecated legacy installs only
+bunx github:OutlineDriven/compound-engineering-slim cleanup --target codex
+bunx github:OutlineDriven/compound-engineering-slim cleanup --target opencode
+bunx github:OutlineDriven/compound-engineering-slim cleanup --target pi
+bunx github:OutlineDriven/compound-engineering-slim cleanup --target gemini
+bunx github:OutlineDriven/compound-engineering-slim cleanup --target kiro
+bunx github:OutlineDriven/compound-engineering-slim cleanup --target qwen      # old Bun installs only
+bunx github:OutlineDriven/compound-engineering-slim cleanup --target windsurf  # deprecated legacy installs only
 ```
 
 Cleanup moves known CE artifacts into a `compound-engineering/legacy-backup/` directory under the target root.
@@ -295,7 +311,7 @@ Codex installs keep generated plugin skills isolated under `~/.codex/skills/comp
 Run the agent install step:
 
 ```bash
-bunx @every-env/compound-plugin install compound-engineering --to codex
+bunx github:OutlineDriven/compound-engineering-slim install compound-engineering --to codex
 ```
 
 Native Codex plugin install handles skills. The Bun step installs the custom agents those skills delegate to.
@@ -305,7 +321,7 @@ Native Codex plugin install handles skills. The Bun step installs the custom age
 Back up old Bun-installed artifacts before switching to the native Codex plugin flow:
 
 ```bash
-bunx @every-env/compound-plugin cleanup --target codex
+bunx github:OutlineDriven/compound-engineering-slim cleanup --target codex
 ```
 
 ### Qwen loads stale CE skills
@@ -313,7 +329,7 @@ bunx @every-env/compound-plugin cleanup --target codex
 Back up old Bun-installed artifacts before using the native plugin path:
 
 ```bash
-bunx @every-env/compound-plugin cleanup --target qwen
+bunx github:OutlineDriven/compound-engineering-slim cleanup --target qwen
 ```
 
 ## Limitations
