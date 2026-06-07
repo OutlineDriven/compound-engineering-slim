@@ -1101,42 +1101,67 @@ export async function cleanupStalePrompts(promptsDir: string): Promise<number> {
 }
 
 /**
- * Ownership verdict for an individual Codex prompt file at a shared path like
- * `~/.codex/prompts/<file>.md`. Used by callers in the Codex install and
+ * Ownership verdict for an individual legacy Codex artifact at a shared path
+ * (a prompt file under `~/.codex/prompts/<file>.md`, or a flat skill directory
+ * under `~/.codex/skills/<name>/`). Used by callers in the Codex install and
  * standalone-cleanup paths to gate legacy-name allow-list moves before
- * renaming a file into `compound-engineering/legacy-backup/`.
+ * renaming an artifact into `compound-engineering/legacy-backup/`.
  *
  * Verdicts:
- *   - `"ce-owned"`: body + frontmatter fingerprint match a known
- *     compound-engineering prompt-wrapper shape. Safe to move.
- *   - `"foreign"`: we have a fingerprint on record for this filename and the
- *     file does NOT match it. A user or sibling plugin authored this file —
- *     leave it alone. `~/.codex/prompts/` is a cross-plugin directory, so a
- *     name-only match (e.g. `ce-plan.md`) is not a strong enough signal.
- *   - `"unknown"`: we have no fingerprint on record for this filename. This
- *     applies to historical prompt wrappers whose corresponding CE skill no
- *     longer ships (e.g. `reproduce-bug.md`, `report-bug.md`) — user
+ *   - `"ce-owned"`: the artifact's fingerprint (prompt body + frontmatter, or
+ *     skill SKILL.md description) matches a known compound-engineering shape.
+ *     Safe to move.
+ *   - `"foreign"`: we have a fingerprint on record for this name and the
+ *     artifact does NOT match it. A user or sibling plugin authored it — leave
+ *     it alone. `~/.codex/prompts/` and `~/.codex/skills/` are cross-plugin
+ *     directories, so a name-only match (e.g. `ce-plan.md`, `ce-demo-reel/`)
+ *     is not a strong enough signal.
+ *   - `"unknown"`: we have no fingerprint on record for this name. This applies
+ *     to historical artifacts whose corresponding CE skill/prompt no longer
+ *     ships and has no description on record (e.g. `report-bug.md`) — user
  *     collisions at those names are unlikely, and the historical allow-list
  *     was written specifically to clean them up. Callers may fall back to
- *     name-only cleanup in this case.
+ *     name-only cleanup in this case so genuinely-owned orphans still sweep.
  *
- * Rationale for the three-way split: `LEGACY_PROMPT_CURRENT_SKILL_FOR_FILE`
- * + `LEGACY_PROMPT_DESCRIPTION_ALIASES` only cover prompt filenames whose
- * corresponding ce-* skill is still shipped. For names that are fully
- * retired, we have no description to compare against, so a strict ownership
- * gate would strand genuinely-owned orphan wrappers. Reporting `"unknown"`
- * lets callers keep the historical allow-list behavior for those while still
- * gating the realistic collision vectors.
+ * Rationale for the three-way split: the fingerprint maps only cover names
+ * whose corresponding ce-* artifact is still shipped or has a hardcoded
+ * historical description. For names that are fully retired with no description
+ * on record, a strict ownership gate would strand genuinely-owned orphans.
+ * Reporting `"unknown"` lets callers keep the historical allow-list behavior
+ * for those while still gating the realistic collision vectors.
  */
-export type CodexPromptOwnership = "ce-owned" | "foreign" | "unknown"
+export type CodexLegacyOwnership = "ce-owned" | "foreign" | "unknown"
 
 export async function classifyCodexLegacyPromptOwnership(
   promptPath: string,
-): Promise<CodexPromptOwnership> {
+): Promise<CodexLegacyOwnership> {
   const fileName = path.basename(promptPath)
   const { prompts } = await loadLegacyFingerprints()
   const hasFingerprint = prompts.has(fileName) || fileName in LEGACY_PROMPT_DESCRIPTION_ALIASES
   if (!hasFingerprint) return "unknown"
   const ceOwned = await isLegacyPromptWrapper(promptPath, prompts.get(fileName))
   return ceOwned ? "ce-owned" : "foreign"
+}
+
+/**
+ * Ownership verdict for a flat legacy skill directory at a shared path like
+ * `~/.codex/skills/<name>/`. Mirrors `classifyCodexLegacyPromptOwnership`:
+ * `~/.codex/skills/` is a cross-plugin directory, so a name match against the
+ * legacy allow-list is not a strong enough signal to relocate a user-authored
+ * skill that happens to share a removed CE skill's name (e.g. `ce-demo-reel`).
+ *
+ * The fingerprint is the description of the current (renamed) skill, or — for
+ * skills with no live ce-* successor — the hardcoded historical description in
+ * `LEGACY_ONLY_SKILL_DESCRIPTIONS`. Both flow through `loadLegacyFingerprints`.
+ * `isLegacyPluginOwned` with a null extension reads `<dir>/SKILL.md`, applies
+ * `LEGACY_SKILL_DESCRIPTION_ALIASES`, and compares descriptions — we reuse it
+ * rather than re-implement that logic.
+ */
+export async function classifyCodexLegacySkillDirOwnership(
+  skillDirPath: string,
+): Promise<CodexLegacyOwnership> {
+  const name = path.basename(skillDirPath)
+  const fingerprint = (await loadLegacyFingerprints()).skills.get(name)
+  if (!fingerprint) return "unknown"
+  return (await isLegacyPluginOwned(skillDirPath, fingerprint, null)) ? "ce-owned" : "foreign"
 }

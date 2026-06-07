@@ -20,7 +20,7 @@ import {
 } from "../data/plugin-legacy-artifacts"
 import { moveLegacyArtifactToBackup } from "../targets/managed-artifacts"
 import { isManagedCodexAgentsSymlink, readCodexInstallManifest, resolveCodexManagedRoots } from "../targets/codex"
-import { classifyCodexLegacyPromptOwnership } from "../utils/legacy-cleanup"
+import { classifyCodexLegacyPromptOwnership, classifyCodexLegacySkillDirOwnership } from "../utils/legacy-cleanup"
 import { isSafeManagedPath, pathExists, readJson, sanitizePathName } from "../utils/files"
 import { resolveOpenCodeGlobalRoot } from "../utils/opencode-config"
 import { expandHome, resolveCodexHome, resolveTargetHome } from "../utils/resolve-home"
@@ -238,7 +238,18 @@ async function cleanupCodex(plugin: Awaited<ReturnType<typeof loadClaudePlugin>>
   const managedDir = path.join(codexRoot, plugin.manifest.name)
   let moved = 0
   for (const skillName of artifacts.skills) {
-    moved += await moveIfExists(managedDir, "skills", path.join(codexRoot, "skills"), skillName, "Codex")
+    // Ownership gate on the FLAT `~/.codex/skills/<name>/` path only: that
+    // directory is shared across plugins and user-authored skills, so a name
+    // match against the historical allow-list is not a strong enough signal to
+    // move it (a user who authored `~/.codex/skills/ce-demo-reel/` must not have
+    // it claimed by name alone). Mirror the prompts gate above. "unknown" (no
+    // fingerprint on record) falls through so fully-retired orphans still sweep.
+    // The managed-store move below stays UNGATED: `~/.codex/skills/<plugin>/` is
+    // CE-owned by location, not by name, so it does not need a content check.
+    const flatSkillPath = path.join(codexRoot, "skills", skillName)
+    if ((await classifyCodexLegacySkillDirOwnership(flatSkillPath)) !== "foreign") {
+      moved += await moveIfExists(managedDir, "skills", path.join(codexRoot, "skills"), skillName, "Codex")
+    }
     if (!currentNamespacedSkills.has(skillName)) {
       moved += await moveIfExists(
         managedDir,

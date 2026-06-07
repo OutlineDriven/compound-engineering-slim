@@ -3,7 +3,7 @@ import fs from "fs/promises"
 import path from "path"
 import os from "os"
 import { parseFrontmatter } from "../src/utils/frontmatter"
-import { cleanupStaleSkillDirs, cleanupStaleAgents, cleanupStalePrompts } from "../src/utils/legacy-cleanup"
+import { cleanupStaleSkillDirs, cleanupStaleAgents, cleanupStalePrompts, classifyCodexLegacySkillDirOwnership } from "../src/utils/legacy-cleanup"
 
 async function createDir(dir: string, content = "placeholder") {
   await fs.mkdir(dir, { recursive: true })
@@ -696,5 +696,44 @@ describe("idempotency", () => {
 
     const second = await cleanupStaleSkillDirs(root) + await cleanupStaleAgents(root, ".md")
     expect(second).toBe(0)
+  })
+})
+
+describe("classifyCodexLegacySkillDirOwnership", () => {
+  test("returns 'ce-owned' for a flat skill dir whose SKILL.md matches the CE fingerprint", async () => {
+    const root = await fs.mkdtemp(path.join(os.tmpdir(), "classify-skilldir-owned-"))
+    __tempRoots.push(root)
+    const skillDir = path.join(root, "ce-demo-reel")
+    await createDir(
+      skillDir,
+      skillContent(
+        "ce-demo-reel",
+        // Exact LEGACY_ONLY_SKILL_DESCRIPTIONS["ce-demo-reel"] string.
+        "Capture a visual demo reel (GIF, terminal recording, screenshots) for PR descriptions. Use when shipping UI changes, CLI features, or any work with observable behavior that benefits from visual proof. Also use when asked to add a demo, record a GIF, screenshot a feature, show what changed visually, create a demo reel, capture evidence, add proof to a PR, or create a before/after comparison.",
+      ),
+    )
+
+    expect(await classifyCodexLegacySkillDirOwnership(skillDir)).toBe("ce-owned")
+  })
+
+  test("returns 'foreign' for a fingerprinted name whose SKILL.md description does not match", async () => {
+    const root = await fs.mkdtemp(path.join(os.tmpdir(), "classify-skilldir-foreign-"))
+    __tempRoots.push(root)
+    const skillDir = path.join(root, "ce-demo-reel")
+    await createDir(
+      skillDir,
+      skillContent("ce-demo-reel", "User-authored demo reel skill, unrelated to compound-engineering."),
+    )
+
+    expect(await classifyCodexLegacySkillDirOwnership(skillDir)).toBe("foreign")
+  })
+
+  test("returns 'unknown' for a name with no fingerprint on record", async () => {
+    const root = await fs.mkdtemp(path.join(os.tmpdir(), "classify-skilldir-unknown-"))
+    __tempRoots.push(root)
+    const skillDir = path.join(root, "totally-user-skill")
+    await createDir(skillDir, skillContent("totally-user-skill", "Some user skill not known to CE."))
+
+    expect(await classifyCodexLegacySkillDirOwnership(skillDir)).toBe("unknown")
   })
 })
