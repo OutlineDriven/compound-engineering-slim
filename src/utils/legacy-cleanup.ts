@@ -17,6 +17,7 @@ import fs from "fs/promises"
 import path from "path"
 import { fileURLToPath } from "url"
 import { parseFrontmatter } from "./frontmatter"
+import { pathExists } from "./files"
 
 /** Old skill directory names that no longer exist after the v3 rename. */
 export const STALE_SKILL_DIRS = [
@@ -750,15 +751,6 @@ function currentSkillNameForLegacy(legacyName: string): string {
       return "ce-code-review"
     default:
       return legacyName.startsWith("ce-") ? legacyName : `ce-${legacyName}`
-  }
-}
-
-async function pathExists(targetPath: string): Promise<boolean> {
-  try {
-    await fs.access(targetPath)
-    return true
-  } catch {
-    return false
   }
 }
 
