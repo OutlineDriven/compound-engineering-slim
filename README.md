@@ -26,6 +26,24 @@ The point is not ceremony. The point is leverage. A good brainstorm makes the pl
 - [Compound engineering: how Every codes with agents](https://every.to/chain-of-thought/compound-engineering-how-every-codes-with-agents)
 - [The story behind compounding engineering](https://every.to/source-code/my-ai-had-already-fixed-the-code-before-i-saw-it)
 
+## Why this fork
+
+This is a deliberately slimmed fork of [EveryInc/compound-engineering-plugin](https://github.com/EveryInc/compound-engineering-plugin). What makes it distinct is that removals here are intentional, registered, and swept on upgrade: deleted skills, agents, and commands are recorded in three legacy-cleanup registries (across `src/utils/legacy-cleanup.ts` and `src/data/plugin-legacy-artifacts.ts`) so stale flat-install artifacts get removed when users upgrade. It is efficient strictly in the surface-area sense -- fewer components mean a smaller install and a smaller prompt surface -- while keeping the same core workflow.
+
+| | this fork | upstream (as of June 2026) |
+|---|---|---|
+| skills | 16 | 39 |
+| agents | 16 | 43 |
+| converter targets | 5 (opencode, codex, pi, gemini, kiro) | more (copilot and droid dropped here) |
+| bundled plugins | 1 | 2 (coding-tutor removed here) |
+
+- 38 skills were removed during slimming.
+- 92+ agent personas were consolidated into fewer focused reviewers.
+- Removals are tracked in three legacy-cleanup registries so upgrades sweep stale artifacts off users' machines.
+- The same brainstorm -> plan -> work -> review -> compound core workflow is preserved.
+
+**How is this different from upstream compound-engineering?** This is a slimmed fork of EveryInc/compound-engineering-plugin. As of June 2026, it ships 16 skills and 16 agents versus upstream's 39 skills and 43 agents, and 5 converter targets (opencode, codex, pi, gemini, kiro) versus upstream's larger set. The core brainstorm -> plan -> work -> review -> compound workflow is unchanged; removals are registered and swept on upgrade rather than left as orphans.
+
 ## Workflow
 
 The core loop is: brainstorm the requirements, plan the implementation, work through the plan, review the result, compound the learning, then repeat with better context.
@@ -65,7 +83,7 @@ For a focused bug investigation:
 
 After installing, run `/ce-setup` in any project. It checks your environment, installs missing tools, and bootstraps project config.
 
-The `compound-engineering` plugin ships 14 skills and 16 agents. See the [full component reference](plugins/compound-engineering/README.md) for the complete inventory.
+The `compound-engineering` plugin ships 16 skills and 16 agents. See the [full component reference](plugins/compound-engineering/README.md) for the complete inventory.
 
 ---
 
