@@ -1,5 +1,42 @@
 # Changelog
 
+## [5.0.0](https://github.com/OutlineDriven/compound-engineering-slim/compare/cli-v4.0.0...cli-v5.0.0) (2026-06-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* **agents:** removes/renames reviewer agents; stale installs are swept via the legacy-cleanup registries.
+* **ce-plan:** removes/renames reviewer agents; stale installs are swept via the legacy-cleanup registries.
+* **doc-review:** removes/renames reviewer agents; stale installs are swept via the legacy-cleanup registries.
+* **review:** removes/renames reviewer agents; stale installs are swept via the legacy-cleanup registries.
+* **coding-tutor:** removes the coding-tutor plugin from the marketplace and release pipeline.
+* **converters:** removes copilot and droid converter/cleanup support; users on old copilot/droid installs must sweep stale artifacts manually.
+
+### Features
+
+* **coding-tutor:** restore coding-tutor plugin ([459c099](https://github.com/OutlineDriven/compound-engineering-slim/commit/459c0997e1805e61e94d9c7105e6ba939170072b))
+* **coding-tutor:** restore coding-tutor plugin ([2395458](https://github.com/OutlineDriven/compound-engineering-slim/commit/2395458bce1a1ec79585d8c3ea403329cc4612be))
+
+
+### Bug Fixes
+
+* **codex:** backfill historical skill description aliases ([ed92665](https://github.com/OutlineDriven/compound-engineering-slim/commit/ed926651056d23595d7a4fd350fc3d4d06ad96b4))
+* **codex:** ownership-gate legacy flat skill-dir backup ([c753187](https://github.com/OutlineDriven/compound-engineering-slim/commit/c753187e951b86f79970cda8fdece68f2f6c587e))
+* **plugin-manifest:** repoint repository/homepage to fork and drop stale keywords ([4e2faeb](https://github.com/OutlineDriven/compound-engineering-slim/commit/4e2faeb2d875fa39c07ee79cbf2495a9d727fab3))
+* **readme:** drop cumulative registry counts that contradict the comparison table ([dcf2cdc](https://github.com/OutlineDriven/compound-engineering-slim/commit/dcf2cdc0966c2b2232347157444cb11df3816372))
+* **readme:** route converter install commands through the fork instead of upstream npm ([d20d64c](https://github.com/OutlineDriven/compound-engineering-slim/commit/d20d64cd0eb61dd8c8113f0eaa5ee92aa2fb19f2))
+* **seo:** repoint fork metadata and install docs, add SEO/GEO positioning ([684b4e4](https://github.com/OutlineDriven/compound-engineering-slim/commit/684b4e4593e17dc7d92bff5c244c8d5eaacd192e))
+
+
+### Code Refactoring
+
+* **agents:** consolidate shared specialist personas ([3c1eb63](https://github.com/OutlineDriven/compound-engineering-slim/commit/3c1eb639b0ee12dd7644ccb3eedd7a982b54bca9))
+* **ce-plan:** consolidate planning research personas ([53ee4ae](https://github.com/OutlineDriven/compound-engineering-slim/commit/53ee4ae5df732d6d2b13005fbe44ae7d1a62ee31))
+* **coding-tutor:** remove coding-tutor plugin ([159cfee](https://github.com/OutlineDriven/compound-engineering-slim/commit/159cfeed3f7cf7cf30623a9d1d925810e713ca30))
+* **converters:** drop copilot and droid converter targets ([923bfee](https://github.com/OutlineDriven/compound-engineering-slim/commit/923bfee6ca5402e9c55cc44609260ccffd730738))
+* **doc-review:** consolidate doc-review personas ([420aca8](https://github.com/OutlineDriven/compound-engineering-slim/commit/420aca80c06b9ea550d5c80966a13b7911d5d28c))
+* **review:** consolidate code-review personas ([e00b844](https://github.com/OutlineDriven/compound-engineering-slim/commit/e00b84437280dd854adb113cd97f926f4467529a))
+
 ## [4.0.0](https://github.com/OutlineDriven/compound-engineering-slim/compare/cli-v3.11.2...cli-v4.0.0) (2026-06-09)
 
 
