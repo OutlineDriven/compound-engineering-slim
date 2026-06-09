@@ -9,6 +9,37 @@ All notable changes to the compound-engineering plugin will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.0](https://github.com/OutlineDriven/compound-engineering-slim/compare/compound-engineering-v3.11.2...compound-engineering-v4.0.0) (2026-06-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* **agents:** removes/renames reviewer agents; stale installs are swept via the legacy-cleanup registries.
+* **ce-plan:** removes/renames reviewer agents; stale installs are swept via the legacy-cleanup registries.
+* **doc-review:** removes/renames reviewer agents; stale installs are swept via the legacy-cleanup registries.
+* **review:** removes/renames reviewer agents; stale installs are swept via the legacy-cleanup registries.
+
+### Features
+
+* **ce-subagent-driven:** add ce-subagent-driven skill ([1d22795](https://github.com/OutlineDriven/compound-engineering-slim/commit/1d22795daadc48cc39392ae8f28688fec9c4dfd3))
+* **ce-verify-before-complete:** add ce-verify-before-complete skill ([6c94b0a](https://github.com/OutlineDriven/compound-engineering-slim/commit/6c94b0af986489559a30aaee7299c56475eb8925))
+
+
+### Bug Fixes
+
+* **ce-commit-push-pr:** remove attribution badges from PR descriptions ([#9](https://github.com/OutlineDriven/compound-engineering-slim/issues/9)) ([95b57a8](https://github.com/OutlineDriven/compound-engineering-slim/commit/95b57a831a778152f16302ed5fd9cd0cd540a8ab))
+* **plugin-manifest:** repoint repository/homepage to fork and drop stale keywords ([4e2faeb](https://github.com/OutlineDriven/compound-engineering-slim/commit/4e2faeb2d875fa39c07ee79cbf2495a9d727fab3))
+* **seo:** repoint fork metadata and install docs, add SEO/GEO positioning ([684b4e4](https://github.com/OutlineDriven/compound-engineering-slim/commit/684b4e4593e17dc7d92bff5c244c8d5eaacd192e))
+* **sweep:** retarget stale persona refs and scrub residual cut names ([d5d09b5](https://github.com/OutlineDriven/compound-engineering-slim/commit/d5d09b57d8590bbeebe287999b3a880a9ddeb860))
+
+
+### Code Refactoring
+
+* **agents:** consolidate shared specialist personas ([3c1eb63](https://github.com/OutlineDriven/compound-engineering-slim/commit/3c1eb639b0ee12dd7644ccb3eedd7a982b54bca9))
+* **ce-plan:** consolidate planning research personas ([53ee4ae](https://github.com/OutlineDriven/compound-engineering-slim/commit/53ee4ae5df732d6d2b13005fbe44ae7d1a62ee31))
+* **doc-review:** consolidate doc-review personas ([420aca8](https://github.com/OutlineDriven/compound-engineering-slim/commit/420aca80c06b9ea550d5c80966a13b7911d5d28c))
+* **review:** consolidate code-review personas ([e00b844](https://github.com/OutlineDriven/compound-engineering-slim/commit/e00b84437280dd854adb113cd97f926f4467529a))
+
 ## [3.11.2](https://github.com/EveryInc/compound-engineering-plugin/compare/compound-engineering-v3.11.1...compound-engineering-v3.11.2) (2026-06-06)
 
 
