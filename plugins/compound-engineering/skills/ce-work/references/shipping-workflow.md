@@ -99,7 +99,7 @@ The shipping workflow (Phase 3-4). Loaded when all Phase 2 tasks are complete an
 
 3. **Commit and Create Pull Request**
 
-   Load the `ce-commit-push-pr` skill for committing, pushing, and PR creation. It handles convention detection, branch safety, logical commit splitting, adaptive PR descriptions, and attribution badges.
+   Load the `ce-commit-push-pr` skill for committing, pushing, and PR creation. It handles convention detection, branch safety, logical commit splitting, and adaptive PR descriptions.
 
    For the PR description context, include:
    - The plan's summary and key decisions
@@ -130,6 +130,5 @@ Before creating PR, verify:
 - [ ] Simplify: `ce-simplify-code` when diff >=30 lines (or skipped with reason)
 - [ ] Code review: Tier 1 completed, or Tier 2 when escalated, or skipped (no Tier 1 + Tier 2 criteria not met; note in summary)
 - [ ] PR description includes summary, testing notes, and evidence when captured
-- [ ] PR description includes Compound Engineered badge with accurate model and harness
 
 The full tier rubric and Tier 2 escalation criteria are in Phase 3 Step 3 (Code Review) above; this file does not restate them.
